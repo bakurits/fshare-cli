@@ -4,16 +4,50 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"os"
+
 	"github.com/pkg/errors"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/drive/v3"
 	"google.golang.org/api/gmail/v1"
-	"io/ioutil"
-	"log"
-	"net/http"
-	"os"
 )
+
+// GetHTTPClient return http client authorized in google
+func GetHTTPClient(credentialsDir string) (*http.Client, error) {
+	b, err := ioutil.ReadFile(credentialsDir + "/credentials.json")
+	if err != nil {
+		return nil, errors.Wrap(err, "unable to read client secret file")
+	}
+
+	// If modifying these scopes, delete your previously saved token.json.
+	config, err := google.ConfigFromJSON(b, drive.DriveMetadataReadonlyScope, gmail.GmailMetadataScope)
+	if err != nil {
+		return nil, errors.Wrap(err, "unable to parse client secret file to config")
+	}
+	// The file token.json stores the user's access and refresh tokens, and is
+	// created automatically when the authorization flow completes for the first
+	// time.
+	tokFile := credentialsDir + "/token.json"
+	tok, err := tokenFromFile(tokFile)
+	if err == nil {
+		return config.Client(context.Background(), tok), nil
+	}
+
+	tok, err = getTokenFromWeb(config)
+	if err != nil {
+		return nil, errors.Wrap(err, "unable to get token from web")
+	}
+	if err = saveToken(tokFile, tok); err != nil {
+		return nil, errors.Wrap(err, "unable to save token")
+	}
+
+	return config.Client(context.Background(), tok), nil
+
+}
 
 // Request a token from the web, then returns the retrieved token.
 func getTokenFromWeb(config *oauth2.Config) (*oauth2.Token, error) {
@@ -67,36 +101,4 @@ func saveToken(path string, token *oauth2.Token) error {
 		return errors.Wrap(err, "unable to encode json data")
 	}
 	return nil
-}
-
-func GetHttpClient(credentialsDir string) (*http.Client, error) {
-	b, err := ioutil.ReadFile(credentialsDir + "/credentials.json")
-	if err != nil {
-		return nil, errors.Wrap(err, "unable to read client secret file")
-	}
-
-	// If modifying these scopes, delete your previously saved token.json.
-	config, err := google.ConfigFromJSON(b, drive.DriveMetadataReadonlyScope, gmail.GmailMetadataScope)
-	if err != nil {
-		return nil, errors.Wrap(err, "unable to parse client secret file to config")
-	}
-	// The file token.json stores the user's access and refresh tokens, and is
-	// created automatically when the authorization flow completes for the first
-	// time.
-	tokFile := credentialsDir + "/token.json"
-	tok, err := tokenFromFile(tokFile)
-	if err == nil {
-		return config.Client(context.Background(), tok), nil
-	}
-
-	tok, err = getTokenFromWeb(config)
-	if err != nil {
-		return nil, errors.Wrap(err, "unable to get token from web")
-	}
-	if err = saveToken(tokFile, tok); err != nil {
-		return nil, errors.Wrap(err, "unable to save token")
-	}
-
-	return config.Client(context.Background(), tok), nil
-
 }

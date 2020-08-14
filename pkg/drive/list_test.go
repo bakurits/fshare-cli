@@ -11,7 +11,7 @@ import (
 
 func TestService_List(t *testing.T) {
 	is := assert.New(t)
-	client, err := auth.GetHttpClient(testutils.RootDir() + "/credentials")
+	client, err := auth.GetHTTPClient(testutils.RootDir() + "/credentials")
 	if err != nil {
 		log.Fatalf("Unable to retrieve http client: %v", err)
 	}
