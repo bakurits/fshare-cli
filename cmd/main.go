@@ -40,5 +40,15 @@ func main() {
 	}
 
 	service, err := drive.Authorize(creditials)
-	uploadFile("C:\\Users\\Giorgi\\Downloads\\IMG_20200811_164530.jpg", service)
+
+	fmt.Printf("Enter The File Path \n")
+	var filePath string
+	if _, err := fmt.Scan(&filePath); err != nil {
+		panic(fmt.Sprintf("error: %v", err))
+	}
+
+	fmt.Println(filePath)
+
+	uploadFile(filePath, service)
+
 }
