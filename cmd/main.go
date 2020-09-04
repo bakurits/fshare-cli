@@ -1,9 +1,9 @@
 package main
 
 import (
-	auth "fileshare/pkg/auth"
-	drive "fileshare/pkg/drive"
 	"fmt"
+	"github.com/bakurits/fileshare/pkg/auth"
+	"github.com/bakurits/fileshare/pkg/drive"
 	"os"
 )
 

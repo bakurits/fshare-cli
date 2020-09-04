@@ -1,7 +1,7 @@
 package drive
 
 import (
-	"fileshare/pkg/auth"
+	"github.com/bakurits/fileshare/pkg/auth"
 	"io"
 	"log"
 	"net/http"
