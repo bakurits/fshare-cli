@@ -1,6 +1,7 @@
 package drive
 
 import (
+	"fileshare/pkg/auth"
 	"io"
 	"log"
 	"net/http"
@@ -60,4 +61,21 @@ func CreateFile(service *drive.Service, name string, mimeType string, content io
 	}
 
 	return file, nil
+}
+
+// get a service object from credentials json file
+func Authorize(credentials string) (Service, error) {
+	client, err := auth.GetHTTPClient(credentials)
+
+	if err != nil {
+		return Service{}, errors.Wrap(err, "unable to get client from drive")
+	}
+
+	service, err := NewService(client)
+
+	if err != nil {
+		return Service{}, errors.Wrap(err, "unable to get service drive")
+	}
+
+	return service, nil
 }
