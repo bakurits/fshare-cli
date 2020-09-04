@@ -1,6 +1,8 @@
 package drive
 
 import (
+	"io"
+	"log"
 	"net/http"
 
 	"github.com/pkg/errors"
@@ -11,7 +13,7 @@ import (
 
 // Service google drive API wrapper
 type Service struct {
-	drive *drive.Service
+	Drive *drive.Service
 }
 
 // NewService returns new service instance
@@ -21,6 +23,41 @@ func NewService(client *http.Client) (Service, error) {
 		return Service{}, errors.Wrap(err, "unable to retrieve Drive client")
 	}
 	return Service{
-		drive: srv,
+		Drive: srv,
 	}, nil
+}
+
+// create a folder in drive
+func CreateDir(service *drive.Service, name string, parentId string) (*drive.File, error) {
+	d := &drive.File{
+		Name:     name,
+		MimeType: "application/vnd.google-apps.folder",
+		Parents:  []string{parentId},
+	}
+
+	file, err := service.Files.Create(d).Do()
+
+	if err != nil {
+		log.Println("Could not create dir: " + err.Error())
+		return nil, err
+	}
+
+	return file, nil
+}
+
+// create a file
+func CreateFile(service *drive.Service, name string, mimeType string, content io.Reader, parentId string) (*drive.File, error) {
+	f := &drive.File{
+		MimeType: mimeType,
+		Name:     name,
+		Parents:  []string{parentId},
+	}
+	file, err := service.Files.Create(f).Media(content).Do()
+
+	if err != nil {
+		log.Println("Could not create file: " + err.Error())
+		return nil, err
+	}
+
+	return file, nil
 }
