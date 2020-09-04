@@ -1,12 +1,13 @@
 package drive
 
 import (
-	"fileshare/pkg/auth"
-	"fileshare/pkg/testutils"
 	"fmt"
-	"github.com/stretchr/testify/assert"
+	"github.com/bakurits/fileshare/pkg/auth"
+	"github.com/bakurits/fileshare/pkg/testutils"
 	"log"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestService_List(t *testing.T) {
