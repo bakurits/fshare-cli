@@ -1,10 +1,11 @@
 package drive
 
 import (
-	"github.com/bakurits/fileshare/pkg/auth"
 	"io"
 	"log"
 	"net/http"
+
+	"github.com/bakurits/fileshare/pkg/auth"
 
 	"github.com/pkg/errors"
 	"golang.org/x/net/context"
@@ -14,29 +15,29 @@ import (
 
 // Service google drive API wrapper
 type Service struct {
-	Drive *drive.Service
+	drive *drive.Service
 }
 
 // NewService returns new service instance
-func NewService(client *http.Client) (Service, error) {
+func NewService(client *http.Client) (*Service, error) {
 	srv, err := drive.NewService(context.Background(), option.WithHTTPClient(client))
 	if err != nil {
-		return Service{}, errors.Wrap(err, "unable to retrieve Drive client")
+		return &Service{}, errors.Wrap(err, "unable to retrieve Drive client")
 	}
-	return Service{
-		Drive: srv,
+	return &Service{
+		drive: srv,
 	}, nil
 }
 
-// create a folder in drive
-func CreateDir(service *drive.Service, name string, parentId string) (*drive.File, error) {
+// CreateDir creates a directory at google drive
+func (s *Service) CreateDir(name string, parentID string) (*drive.File, error) {
 	d := &drive.File{
 		Name:     name,
 		MimeType: "application/vnd.google-apps.folder",
-		Parents:  []string{parentId},
+		Parents:  []string{parentID},
 	}
 
-	file, err := service.Files.Create(d).Do()
+	file, err := s.drive.Files.Create(d).Do()
 
 	if err != nil {
 		log.Println("Could not create dir: " + err.Error())
@@ -46,14 +47,14 @@ func CreateDir(service *drive.Service, name string, parentId string) (*drive.Fil
 	return file, nil
 }
 
-// create a file
-func CreateFile(service *drive.Service, name string, mimeType string, content io.Reader, parentId string) (*drive.File, error) {
+// CreateFile creates a file
+func (s *Service) CreateFile(name string, mimeType string, content io.Reader, parentID string) (*drive.File, error) {
 	f := &drive.File{
 		MimeType: mimeType,
 		Name:     name,
-		Parents:  []string{parentId},
+		Parents:  []string{parentID},
 	}
-	file, err := service.Files.Create(f).Media(content).Do()
+	file, err := s.drive.Files.Create(f).Media(content).Do()
 
 	if err != nil {
 		log.Println("Could not create file: " + err.Error())
@@ -63,18 +64,18 @@ func CreateFile(service *drive.Service, name string, mimeType string, content io
 	return file, nil
 }
 
-// get a service object from credentials json file
-func Authorize(credentials string) (Service, error) {
+// Authorize get a service object from credentials json file
+func Authorize(credentials string) (*Service, error) {
 	client, err := auth.GetHTTPClient(credentials)
 
 	if err != nil {
-		return Service{}, errors.Wrap(err, "unable to get client from drive")
+		return &Service{}, errors.Wrap(err, "unable to get client from drive")
 	}
 
 	service, err := NewService(client)
 
 	if err != nil {
-		return Service{}, errors.Wrap(err, "unable to get service drive")
+		return &Service{}, errors.Wrap(err, "unable to get service drive")
 	}
 
 	return service, nil

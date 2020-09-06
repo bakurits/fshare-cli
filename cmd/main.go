@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/bakurits/fileshare/pkg/drive"
+	"log"
 	"mime"
 	"os"
 	"path/filepath"
+
+	"github.com/bakurits/fileshare/pkg/drive"
 )
 
 func getFilePathMimeType(filePath string) string {
@@ -14,7 +16,7 @@ func getFilePathMimeType(filePath string) string {
 	return tp
 }
 
-func uploadFile(filepath string, service drive.Service) {
+func uploadFile(filepath string, s *drive.Service) {
 	f, err := os.Open(filepath)
 
 	if err != nil {
@@ -26,7 +28,7 @@ func uploadFile(filepath string, service drive.Service) {
 
 	tp := getFilePathMimeType(filepath)
 
-	file, err := drive.CreateFile(service.Drive, filepath, tp, f, "root")
+	file, err := s.CreateFile(filepath, tp, f, "root")
 	fmt.Println(file)
 
 	return
@@ -36,15 +38,18 @@ func main() {
 	creditials, err := os.Getwd()
 	creditials = creditials + "/credentials"
 	if err != nil {
-		fmt.Sprintf("cannot open file: %v", err)
+		log.Fatalf("cannot open file: %v", err)
 	}
 
 	service, err := drive.Authorize(creditials)
+	if err != nil {
+		log.Fatalf("error: %v", err)
+	}
 
 	fmt.Printf("Enter The File Path \n")
 	var filePath string
 	if _, err := fmt.Scan(&filePath); err != nil {
-		panic(fmt.Sprintf("error: %v", err))
+		log.Fatalf("error: %v", err)
 	}
 
 	fmt.Println(filePath)
