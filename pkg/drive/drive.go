@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"github.com/bakurits/fileshare/pkg/auth"
-
 	"github.com/pkg/errors"
 	"golang.org/x/net/context"
 	"google.golang.org/api/drive/v3"
