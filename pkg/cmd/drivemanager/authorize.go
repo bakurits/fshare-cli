@@ -2,9 +2,10 @@ package drivemanager
 
 import (
 	"encoding/json"
+	"io/ioutil"
+
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-	"io/ioutil"
 )
 
 // NewAuthorizeCommand : authorizeCmd represents the authorize command
@@ -31,8 +32,8 @@ func authorize(filePath string) error {
 	credentialsMap := make(map[string]string)
 
 	credentialsMap["credentialsPath"] = filePath
-	fileJson, _ := json.Marshal(credentialsMap)
-	err := ioutil.WriteFile(driveConfig, fileJson, 0777)
+	fileJSON, _ := json.Marshal(credentialsMap)
+	err := ioutil.WriteFile(driveConfig, fileJSON, 0777)
 
 	return err
 }
