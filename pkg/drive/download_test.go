@@ -15,7 +15,7 @@ func TestService_Download(t *testing.T) {
 	srv, err := NewService(client)
 	is.NoError(err)
 
-	f, err := srv.Get("შესარჩევი სრული")
+	f, err := srv.Get("The-Go-Programming-Language.pdf")
 	is.NoError(err)
 
 	err = srv.Download(f)

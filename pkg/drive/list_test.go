@@ -2,10 +2,11 @@ package drive
 
 import (
 	"fmt"
-	"github.com/bakurits/fileshare/pkg/auth"
-	"github.com/bakurits/fileshare/pkg/testutils"
 	"log"
 	"testing"
+
+	"github.com/bakurits/fileshare/pkg/auth"
+	"github.com/bakurits/fileshare/pkg/testutils"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -19,6 +20,6 @@ func TestService_List(t *testing.T) {
 
 	srv, err := NewService(client)
 	is.NoError(err)
-	files := srv.List()
+	files := srv
 	fmt.Println(files)
 }
