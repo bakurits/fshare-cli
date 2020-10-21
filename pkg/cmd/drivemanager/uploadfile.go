@@ -3,13 +3,9 @@ package drivemanager
 import (
 	"encoding/json"
 	"errors"
-	"io/ioutil"
-	"mime"
-	"os"
-	"path/filepath"
-
 	"github.com/bakurits/fileshare/pkg/drive"
 	"github.com/spf13/cobra"
+	"io/ioutil"
 )
 
 // NewUploadFileCommand : authorizeCmd represents the authorize command
@@ -52,34 +48,12 @@ func runUploadFile(args []string) error {
 		return err
 	}
 
-	for _, args := range args {
-		err = uploadFile(args, service)
+	for _, arg := range args {
+		_, err = service.Upload(arg)
 		if err != nil {
 			return err
 		}
 	}
 
 	return nil
-}
-
-func uploadFile(filepath string, s *drive.Service) error {
-	f, err := os.Open(filepath)
-
-	if err != nil {
-		return errors.New("file does not exist " + filepath)
-	}
-
-	tp := getFilePathMimeType(filepath)
-
-	_, err = s.CreateFile(filepath, tp, f, "root")
-
-	defer f.Close()
-
-	return err
-}
-
-func getFilePathMimeType(filePath string) string {
-	ext := filepath.Ext(filePath)
-	tp := mime.TypeByExtension(ext)
-	return tp
 }

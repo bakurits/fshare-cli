@@ -1,7 +1,6 @@
 package drive
 
 import (
-	"io"
 	"log"
 	"net/http"
 
@@ -40,23 +39,6 @@ func (s *Service) CreateDir(name string, parentID string) (*drive.File, error) {
 
 	if err != nil {
 		log.Println("Could not create dir: " + err.Error())
-		return nil, err
-	}
-
-	return file, nil
-}
-
-// CreateFile creates a file
-func (s *Service) CreateFile(name string, mimeType string, content io.Reader, parentID string) (*drive.File, error) {
-	f := &drive.File{
-		MimeType: mimeType,
-		Name:     name,
-		Parents:  []string{parentID},
-	}
-	file, err := s.drive.Files.Create(f).Media(content).Do()
-
-	if err != nil {
-		log.Println("Could not create file: " + err.Error())
 		return nil, err
 	}
 
