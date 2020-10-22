@@ -2,6 +2,7 @@ package drive
 
 import (
 	"fmt"
+	"net/http"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -44,7 +45,19 @@ func (s *Service) Download(f *drive.File) error {
 	}
 	defer func() { _ = resp.Body.Close() }()
 
-	out, err := os.Create(f.Name + ".tmp")
+	if err = downloadTmp(resp, f.Name); err != nil {
+		return err
+	}
+
+	if err = os.Rename(f.Name+".tmp", f.Name); err != nil {
+		return errors.Wrap(err, "can't store file")
+	}
+	fmt.Println("")
+	return nil
+}
+
+func downloadTmp(resp *http.Response, fileName string) error {
+	out, err := os.Create(fileName + ".tmp")
 	if err != nil {
 		return errors.Wrap(err, "can't create file")
 	}
@@ -56,10 +69,5 @@ func (s *Service) Download(f *drive.File) error {
 	if err != nil {
 		return errors.Wrap(err, "can't copy data")
 	}
-
-	if err = os.Rename(f.Name+".tmp", f.Name); err != nil {
-		return errors.Wrap(err, "can't store file")
-	}
-	fmt.Println("")
 	return nil
 }
