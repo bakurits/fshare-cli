@@ -7,6 +7,8 @@ import (
 	"github.com/pkg/errors"
 	"google.golang.org/api/drive/v3"
 
+	"github.com/dustin/go-humanize"
+
 	"io"
 	"os"
 )
@@ -31,7 +33,7 @@ func (wc WriteCounter) PrintProgress() {
 
 	// Return again and print current status of download
 	// We use the humanize package to print the bytes in a meaningful way (e.g. 10 MB)
-	fmt.Printf("\rDownloading... %d complete", wc.Total)
+	fmt.Printf("\rDownloading... %s complete", humanize.Bytes(wc.Total))
 }
 
 // Download downloads file from drive
@@ -58,5 +60,6 @@ func (s *Service) Download(f *drive.File) error {
 	if err = os.Rename(f.Name+".tmp", f.Name); err != nil {
 		return errors.Wrap(err, "can't store file")
 	}
+	fmt.Println("")
 	return nil
 }
