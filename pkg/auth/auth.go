@@ -24,7 +24,7 @@ func GetHTTPClient(credentialsDir string) (*http.Client, error) {
 	}
 
 	// If modifying these scopes, delete your previously saved token.json.
-	config, err := google.ConfigFromJSON(b, drive.DriveFileScope, gmail.GmailMetadataScope)
+	config, err := google.ConfigFromJSON(b, drive.DriveScope, gmail.GmailMetadataScope)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to parse client secret file to config")
 	}

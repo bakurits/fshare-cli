@@ -1,25 +1,23 @@
 package drive
 
 import (
-	"fmt"
-	"log"
-	"testing"
-
 	"github.com/bakurits/fileshare/pkg/auth"
 	"github.com/bakurits/fileshare/pkg/testutils"
-
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
-func TestService_List(t *testing.T) {
+func TestService_Download(t *testing.T) {
 	is := assert.New(t)
 	client, err := auth.GetHTTPClient(testutils.RootDir() + "/credentials")
-	if err != nil {
-		log.Fatalf("Unable to retrieve http client: %v", err)
-	}
+	is.NoError(err)
 
 	srv, err := NewService(client)
 	is.NoError(err)
-	files := srv
-	fmt.Println(files)
+
+	f, err := srv.Get("The-Go-Programming-Language.pdf")
+	is.NoError(err)
+
+	err = srv.Download(f)
+	is.NoError(err)
 }

@@ -2,16 +2,14 @@ package drive
 
 import (
 	"fmt"
-	"log"
-	"testing"
-
 	"github.com/bakurits/fileshare/pkg/auth"
 	"github.com/bakurits/fileshare/pkg/testutils"
-
 	"github.com/stretchr/testify/assert"
+	"log"
+	"testing"
 )
 
-func TestService_List(t *testing.T) {
+func TestService_Get(t *testing.T) {
 	is := assert.New(t)
 	client, err := auth.GetHTTPClient(testutils.RootDir() + "/credentials")
 	if err != nil {
@@ -20,6 +18,6 @@ func TestService_List(t *testing.T) {
 
 	srv, err := NewService(client)
 	is.NoError(err)
-	files := srv
-	fmt.Println(files)
+	f, err := srv.Get("შესარჩევი სრული")
+	fmt.Println(f)
 }

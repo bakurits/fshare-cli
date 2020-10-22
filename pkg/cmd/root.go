@@ -40,6 +40,7 @@ func init() {
 	rootCmd.AddCommand(drivemanager.NewCreateDirCommand())
 	rootCmd.AddCommand(drivemanager.NewAuthorizeCommand())
 	rootCmd.AddCommand(drivemanager.NewListCommand())
+	rootCmd.AddCommand(drivemanager.NewDownloadCommand())
 }
 
 // initConfig : initConfig reads in config file and ENV variables if set.
