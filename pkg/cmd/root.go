@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/bakurits/fileshare/pkg/cmd/customoperations"
 	"github.com/bakurits/fileshare/pkg/cmd/drivemanager"
+	"github.com/bakurits/fileshare/pkg/cmd/mail"
 	"github.com/spf13/cobra"
 	"os"
 
@@ -41,6 +42,7 @@ func init() {
 	rootCmd.AddCommand(drivemanager.NewAuthorizeCommand())
 	rootCmd.AddCommand(drivemanager.NewListCommand())
 	rootCmd.AddCommand(drivemanager.NewDownloadCommand())
+	rootCmd.AddCommand(mail.NewSendAttachmentCommand())
 }
 
 // initConfig : initConfig reads in config file and ENV variables if set.

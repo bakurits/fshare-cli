@@ -8,7 +8,7 @@ import (
 	"io/ioutil"
 )
 
-// NewCreateDirCommand : generates of command createdir
+// NewCreateDirCommand : NewCreateDirCommand represents the creation of dir command
 func NewCreateDirCommand() *cobra.Command {
 
 	// createdirCmd represents the createdir command

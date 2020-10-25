@@ -23,12 +23,12 @@ func GetHTTPClient(credentialsDir string) (*http.Client, error) {
 		return nil, errors.Wrap(err, "unable to read client secret file")
 	}
 
-	// If modifying these scopes, delete your previously saved token.json.
-	config, err := google.ConfigFromJSON(b, drive.DriveScope, gmail.GmailMetadataScope)
+	// If modifying these scopes, delete your previously saved tokenMail.json.
+	config, err := google.ConfigFromJSON(b, drive.DriveScope, gmail.GmailMetadataScope, gmail.GmailSendScope)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to parse client secret file to config")
 	}
-	// The file token.json stores the user's access and refresh tokens, and is
+	// The file tokenMail.json stores the user's access and refresh tokens, and is
 	// created automatically when the authorization flow completes for the first
 	// time.
 	tokFile := credentialsDir + "/token.json"

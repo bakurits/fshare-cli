@@ -12,7 +12,7 @@ import (
 func NewAuthorizeCommand() *cobra.Command {
 	var authorizeCmd = &cobra.Command{
 		Use:   "authorize",
-		Short: "make authorization in google drivemanager with credentials with given directory which holds a file credentials.json",
+		Short: "make authorization in google drivemanager with credentials with given directory which holds a file credentialsMail.json",
 		Long:  ``,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) != 1 {
