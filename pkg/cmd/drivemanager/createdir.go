@@ -1,15 +1,19 @@
 package drivemanager
 
 import (
-	"encoding/json"
-	"errors"
 	"github.com/bakurits/fileshare/pkg/drive"
+	"github.com/bakurits/fileshare/pkg/testutils"
 	"github.com/spf13/cobra"
-	"io/ioutil"
 )
+
+type CreateDirOptions struct {
+	name   string
+	parent string
+}
 
 // NewCreateDirCommand : NewCreateDirCommand represents the creation of dir command
 func NewCreateDirCommand() *cobra.Command {
+	var opts CreateDirOptions
 
 	// createdirCmd represents the createdir command
 	var createdirCmd = &cobra.Command{
@@ -17,36 +21,24 @@ func NewCreateDirCommand() *cobra.Command {
 		Short: "creation of directory in google drive",
 		Long:  `creation of directory in google drive, first argument is dir you want to create, second argument is parent directory`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return runCreateDir(args)
+			return runCreateDir(opts)
 		},
 	}
+
+	createdirCmd.Flags().StringVarP(&opts.name, "name", "n", "", "name of the directory")
+	createdirCmd.Flags().StringVarP(&opts.parent, "parent", "p", "", "parent directory name")
+	createdirCmd.MarkFlagRequired("name")
+	createdirCmd.MarkFlagRequired("parent")
+
 	return createdirCmd
 }
 
-func runCreateDir(args []string) error {
-	if len(args) != 2 {
-		return errors.New("you should specify the directory you want to create and parent directory")
-	}
+func runCreateDir(opts CreateDirOptions) error {
 
-	createDir := args[0]
-	parentDir := args[1]
+	createDir := opts.name
+	parentDir := opts.parent
 
-	content, err := ioutil.ReadFile("state.json")
-
-	if err != nil {
-		return errors.New("you are not authorized")
-	}
-
-	var credentialsMap map[string]string
-
-	_ = json.Unmarshal(content, &credentialsMap)
-
-	credentialsPath, ok := credentialsMap["credentialsPath"]
-	if !ok {
-		return errors.New("you are not authorized")
-	}
-
-	service, err := drive.Authorize(credentialsPath)
+	service, err := drive.Authorize(testutils.RootDir() + "/credentials")
 
 	if err != nil {
 		return err

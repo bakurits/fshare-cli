@@ -1,11 +1,10 @@
 package drivemanager
 
 import (
-	"encoding/json"
 	"errors"
 	"github.com/bakurits/fileshare/pkg/drive"
+	"github.com/bakurits/fileshare/pkg/testutils"
 	"github.com/spf13/cobra"
-	"io/ioutil"
 )
 
 // NewUploadFileCommand : authorizeCmd represents the authorize command
@@ -26,23 +25,8 @@ func runUploadFile(args []string) error {
 	if len(args) == 0 {
 		return errors.New("no file specified to upload")
 	}
-	// Read the file
-	content, err := ioutil.ReadFile("state.json")
 
-	if err != nil {
-		return errors.New("you are not authorized")
-	}
-
-	var credentialsMap map[string]string
-
-	_ = json.Unmarshal(content, &credentialsMap)
-
-	credentialsPath, ok := credentialsMap["credentialsPath"]
-	if !ok {
-		return errors.New("you are not authorized")
-	}
-
-	service, err := drive.Authorize(credentialsPath)
+	service, err := drive.Authorize(testutils.RootDir() + "/credentials")
 
 	if err != nil {
 		return err

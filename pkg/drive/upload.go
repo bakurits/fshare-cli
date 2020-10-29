@@ -9,17 +9,18 @@ import (
 	"google.golang.org/api/drive/v3"
 )
 
-func (s *Service) Upload(filepath string) (*drive.File, error) {
-	f, err := os.Open(filepath)
+func (s *Service) Upload(filePath string) (*drive.File, error) {
+	f, err := os.Open(filePath)
 	if err != nil {
-		return nil, errors.New("file does not exist " + filepath)
+		return nil, errors.New("file does not exist " + filePath)
 	}
 	defer func() { _ = f.Close() }()
+	_, fileName := filepath.Split(f.Name())
 
-	tp := getFilePathMimeType(filepath)
+	tp := getFilePathMimeType(filePath)
 	df := &drive.File{
 		MimeType: tp,
-		Name:     f.Name(),
+		Name:     fileName,
 		Parents:  []string{"root"},
 	}
 	file, err := s.drive.Files.Create(df).Media(f).Do()

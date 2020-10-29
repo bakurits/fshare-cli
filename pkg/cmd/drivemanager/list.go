@@ -1,12 +1,10 @@
 package drivemanager
 
 import (
-	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/bakurits/fileshare/pkg/drive"
+	"github.com/bakurits/fileshare/pkg/testutils"
 	"github.com/spf13/cobra"
-	"io/ioutil"
 )
 
 // NewListCommand : generates of command list command
@@ -27,22 +25,8 @@ func NewListCommand() *cobra.Command {
 }
 
 func runList() error {
-	content, err := ioutil.ReadFile("state.json")
 
-	if err != nil {
-		return errors.New("you are not authorized")
-	}
-
-	var credentialsMap map[string]string
-
-	_ = json.Unmarshal(content, &credentialsMap)
-
-	credentialsPath, ok := credentialsMap["credentialsPath"]
-	if !ok {
-		return errors.New("you are not authorized")
-	}
-
-	service, err := drive.Authorize(credentialsPath)
+	service, err := drive.Authorize(testutils.RootDir() + "/credentials")
 
 	if err != nil {
 		return err
