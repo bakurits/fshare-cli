@@ -3,6 +3,7 @@ module github.com/bakurits/fileshare
 go 1.14
 
 require (
+	github.com/adam-lavrik/go-imath v0.0.0-20200104135348-19d2b923d06c
 	github.com/dustin/go-humanize v1.0.0
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/pkg/errors v0.9.1
