@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/bakurits/fileshare/pkg/cfg"
+	"golang.org/x/oauth2/google"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -11,60 +13,89 @@ import (
 
 	"github.com/pkg/errors"
 	"golang.org/x/oauth2"
-	"golang.org/x/oauth2/google"
 	"google.golang.org/api/drive/v3"
 	"google.golang.org/api/gmail/v1"
 )
 
-// GetHTTPClient return http client authorized in google
-func GetHTTPClient(credentialsDir string) (*http.Client, error) {
-	b, err := ioutil.ReadFile(credentialsDir + "/credentials.json")
-	if err != nil {
-		return nil, errors.Wrap(err, "unable to read client secret file")
-	}
-
-	// If modifying these scopes, delete your previously saved tokenMail.json.
-	config, err := google.ConfigFromJSON(b, drive.DriveScope, gmail.GmailMetadataScope, gmail.GmailSendScope)
-	if err != nil {
-		return nil, errors.Wrap(err, "unable to parse client secret file to config")
-	}
-	// The file tokenMail.json stores the user's access and refresh tokens, and is
-	// created automatically when the authorization flow completes for the first
-	// time.
-	tokFile := credentialsDir + "/token.json"
-	tok, err := tokenFromFile(tokFile)
-	if err == nil {
-		return config.Client(context.Background(), tok), nil
-	}
-
-	tok, err = getTokenFromWeb(config)
-	if err != nil {
-		return nil, errors.Wrap(err, "unable to get token from web")
-	}
-	if err = saveToken(tokFile, tok); err != nil {
-		return nil, errors.Wrap(err, "unable to save token")
-	}
-
-	return config.Client(context.Background(), tok), nil
-
+// Scopes needed for API
+var Scopes = []string{
+	drive.DriveScope,
+	gmail.GmailMetadataScope,
+	gmail.GmailSendScope,
 }
 
-// Request a token from the web, then returns the retrieved token.
-func getTokenFromWeb(config *oauth2.Config) (*oauth2.Token, error) {
-	authURL := config.AuthCodeURL("state-token", oauth2.AccessTypeOffline)
-	fmt.Printf("Go to the following link in your browser then type the "+
-		"authorization code: \n%v\n", authURL)
+type Config struct {
+	appConfig  cfg.Config
+	authConfig oauth2.Config
+}
 
-	var authCode string
-	if _, err := fmt.Scan(&authCode); err != nil {
-		return nil, errors.Wrap(err, "unable to read authorization code")
+func GetConfig(conf cfg.Config) *Config {
+	return &Config{
+		appConfig: conf,
+		authConfig: oauth2.Config{
+			ClientID:     conf.GoogleCredentials.ClientID,
+			ClientSecret: conf.GoogleCredentials.ClientSecret,
+			RedirectURL:  conf.Server + conf.Port + "/auth",
+			Scopes:       Scopes,
+			Endpoint:     google.Endpoint,
+		},
 	}
+}
 
-	tok, err := config.Exchange(context.TODO(), authCode)
+func (cfg *Config) AuthCodeURL(state string) string {
+	return cfg.authConfig.AuthCodeURL(state)
+}
+
+type Client struct {
+	*http.Client
+	Email string
+}
+
+// ClientFromCode returns auth client from code
+func (cfg *Config) ClientFromCode(code string) (*Client, error) {
+	tok, err := cfg.authConfig.Exchange(context.Background(), code)
 	if err != nil {
-		return nil, errors.Wrap(err, "unable to retrieve token from web ")
+		return nil, errors.Wrap(err, "error while generating token")
 	}
-	return tok, nil
+	_ = saveToken("newToken.json", tok)
+
+	return cfg.ClientFromToken(tok)
+}
+
+// ClientFromTokenFile return auth token from token file
+func (cfg *Config) ClientFromTokenFile(path string) (*Client, error) {
+	b, err := ioutil.ReadFile(path)
+	if err != nil {
+		return nil, errors.Wrap(err, "unable to open file")
+	}
+	v := oauth2.Token{}
+	if err := json.Unmarshal(b, &v); err != nil {
+		return nil, errors.Wrap(err, "unable to unmarshal token")
+	}
+	return cfg.ClientFromToken(&v)
+}
+
+// ClientFromToken return auth client from token
+func (cfg *Config) ClientFromToken(tok *oauth2.Token) (*Client, error) {
+	client := cfg.authConfig.Client(context.Background(), tok)
+	resp, err := client.Get("https://gmail.googleapis.com/gmail/v1/users/me/profile")
+	if err != nil {
+		return nil, errors.Wrap(err, "error while getting user information")
+	}
+	defer func() { _ = resp.Body.Close() }()
+
+	user := struct {
+		Email string `json:"emailAddress"`
+	}{}
+	err = json.NewDecoder(resp.Body).Decode(&user)
+	if err != nil {
+		return nil, errors.Wrap(err, "error while retrieving user email")
+	}
+
+	return &Client{
+		Client: client,
+		Email:  user.Email,
+	}, nil
 }
 
 // Retrieves a token from a local file.

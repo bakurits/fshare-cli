@@ -1,11 +1,9 @@
 package drivemanager
 
 import (
-	"encoding/json"
-	"errors"
 	"github.com/bakurits/fileshare/pkg/drive"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-	"io/ioutil"
 )
 
 // NewCreateDirCommand : NewCreateDirCommand represents the creation of dir command
@@ -31,23 +29,12 @@ func runCreateDir(args []string) error {
 	createDir := args[0]
 	parentDir := args[1]
 
-	content, err := ioutil.ReadFile("state.json")
-
+	authClient, err := getAuthClient()
 	if err != nil {
-		return errors.New("you are not authorized")
+		return errors.Wrap(err, "auth error")
 	}
 
-	var credentialsMap map[string]string
-
-	_ = json.Unmarshal(content, &credentialsMap)
-
-	credentialsPath, ok := credentialsMap["credentialsPath"]
-	if !ok {
-		return errors.New("you are not authorized")
-	}
-
-	service, err := drive.Authorize(credentialsPath)
-
+	service, err := drive.NewService(authClient.Client)
 	if err != nil {
 		return err
 	}

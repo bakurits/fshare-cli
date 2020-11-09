@@ -1,9 +1,8 @@
 package mail
 
 import (
-	"github.com/bakurits/fileshare/pkg/auth"
 	"github.com/bakurits/fileshare/pkg/gmail"
-	"github.com/bakurits/fileshare/pkg/testutils"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"path/filepath"
 )
@@ -46,12 +45,11 @@ func NewSendAttachmentCommand() *cobra.Command {
 // runSendMail : sending gmail command
 func runSendMail(opts SendMAilOptions) error {
 	fileDir, fileName := filepath.Split(opts.AttachmentPath)
-
-	client, err := auth.GetHTTPClient(testutils.RootDir() + "/credentials")
+	authClient, err := getAuthClient()
 	if err != nil {
-		return err
+		return errors.Wrap(err, "auth error")
 	}
-	srv, err := gmail.NewService(client)
+	srv, err := gmail.NewService(authClient.Client)
 	if err != nil {
 		return err
 	}

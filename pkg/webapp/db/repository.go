@@ -1,4 +1,4 @@
-package repository
+package db
 
 import (
 	"log"
@@ -31,6 +31,13 @@ func (r *repository) GetToken(userName string) (User, error) {
 		return u, errors.Wrap(err, "error while getting token")
 	}
 	return u, nil
+}
+
+func (r *repository) AddUser(user User) error {
+	if err := r.db.Save(user).Error; err != nil {
+		return errors.Wrap(err, "error while adding new user")
+	}
+	return nil
 }
 
 type repository struct {

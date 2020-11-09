@@ -1,9 +1,7 @@
 package drivemanager
 
 import (
-	"github.com/bakurits/fileshare/pkg/auth"
 	"github.com/bakurits/fileshare/pkg/drive"
-	"github.com/bakurits/fileshare/pkg/testutils"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
@@ -29,9 +27,12 @@ func NewDownloadCommand() *cobra.Command {
 
 // download : make download
 func download(name string) error {
-	client, err := auth.GetHTTPClient(testutils.RootDir() + "/credentials")
+	authClient, err := getAuthClient()
+	if err != nil {
+		return errors.Wrap(err, "auth error")
+	}
 
-	srv, err := drive.NewService(client)
+	srv, err := drive.NewService(authClient.Client)
 	if err != nil {
 		return errors.Wrap(err, "unexpected error")
 	}

@@ -1,4 +1,4 @@
-package repository
+package db
 
 import "golang.org/x/oauth2"
 
