@@ -15,7 +15,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	repository, err := db.NewRepository(conf.DBDialect, conf.ConnectionString)
+	repository, err := db.NewRepository(conf.ConnectionString)
 	if err != nil {
 		log.Fatal(err)
 	}
