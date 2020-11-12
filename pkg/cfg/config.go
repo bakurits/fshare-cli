@@ -8,8 +8,10 @@ import (
 )
 
 type Config struct {
-	StaticFileDir    string
+	StaticFileDir string
+
 	ConnectionString string
+	DBDialect        string
 
 	Server string
 	Port   string

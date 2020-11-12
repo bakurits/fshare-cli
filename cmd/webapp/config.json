@@ -1,6 +1,7 @@
 {
   "StaticFileDir": "/home/bakurits/Documents/Programming/Utilities/fileshare/pkg/webapp/tpls",
   "ConnectionString": "/home/bakurits/Documents/Programming/Utilities/fileshare/cmd/webapp/database",
+  "DBDialect": "sqlite3",
   "Server": "http://localhost",
   "Port": ":8080",
   "GoogleCredentialsPath": "/home/bakurits/Documents/Programming/Utilities/fileshare/credentials/web_app_credentials.json",

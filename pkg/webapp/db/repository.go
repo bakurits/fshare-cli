@@ -1,11 +1,12 @@
 package db
 
 import (
+	"gorm.io/driver/sqlite"
 	"log"
 
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"github.com/pkg/errors"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 // Repository API for accessing database
@@ -14,8 +15,8 @@ type Repository interface {
 }
 
 // NewRepository returns new repository object
-func NewRepository(connectionString string) (Repository, error) {
-	db := initGorm("sqlite3", connectionString)
+func NewRepository(dialect, connectionString string) (Repository, error) {
+	db := initGorm(dialect, connectionString)
 	if db == nil {
 		return nil, errors.New("error while initializing gorm object")
 	}
@@ -44,14 +45,25 @@ type repository struct {
 	db *gorm.DB
 }
 
+func openDB(dialect string, connectionString string) (*gorm.DB, error) {
+	switch dialect {
+	case "sqlite3":
+		return gorm.Open(sqlite.Open(connectionString), nil)
+	case "mysql":
+		return gorm.Open(mysql.Open(connectionString), nil)
+	default:
+		return nil, errors.New("unknown dialect")
+	}
+}
+
 func initGorm(dialect string, connectionString string) *gorm.DB {
-	var db, err = gorm.Open(dialect, connectionString)
+	db, err := openDB(dialect, connectionString)
 	if err != nil {
 		log.Println(err)
 		return nil
 	}
 
 	db.Set("gorm:table_options", "charset=utf8")
-	db.AutoMigrate(User{})
+	_ = db.AutoMigrate(User{})
 	return db
 }
