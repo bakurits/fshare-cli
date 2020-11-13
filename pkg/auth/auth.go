@@ -48,6 +48,8 @@ func (cfg *Config) AuthCodeURL(state string) string {
 
 type Client struct {
 	*http.Client
+	Token *oauth2.Token
+
 	Email string
 }
 
@@ -94,7 +96,9 @@ func (cfg *Config) ClientFromToken(tok *oauth2.Token) (*Client, error) {
 
 	return &Client{
 		Client: client,
-		Email:  user.Email,
+		Token:  tok,
+
+		Email: user.Email,
 	}, nil
 }
 

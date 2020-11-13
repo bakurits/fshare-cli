@@ -6,14 +6,15 @@ import (
 	"fmt"
 	"github.com/pkg/errors"
 	"golang.org/x/oauth2"
+	"time"
 )
 
 type TokenStore oauth2.Token
 
 // User db model for users
 type User struct {
-	UserName string
-	Email    string
+	Email    string `gorm:"primaryKey"`
+	Password string
 	Token    TokenStore
 }
 
@@ -33,4 +34,11 @@ func (t *TokenStore) Scan(value interface{}) error {
 // Value return json value, implement driver.Valuer interface
 func (t TokenStore) Value() (driver.Value, error) {
 	return json.Marshal(t)
+}
+
+// PasswordRestoreRequest stores data about password restore requests
+type PasswordRestoreRequest struct {
+	Token       string
+	Email       string
+	RequestDate time.Time
 }

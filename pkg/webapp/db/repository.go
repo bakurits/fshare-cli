@@ -11,7 +11,9 @@ import (
 
 // Repository API for accessing database
 type Repository interface {
-	GetToken(string) (User, error)
+	GetUser(string) (User, error)
+	AddUser(User) error
+	GetPasswordRestoreInfo(string) (PasswordRestoreRequest, error)
 }
 
 // NewRepository returns new repository object
@@ -26,16 +28,20 @@ func NewRepository(dialect, connectionString string) (Repository, error) {
 	}, nil
 }
 
-func (r *repository) GetToken(userName string) (User, error) {
+func (r *repository) GetUser(email string) (User, error) {
 	var u User
-	if err := r.db.Where("user_name = ?", userName).First(&u).Error; err != nil {
+	if err := r.db.Where("email = ?", email).First(&u).Error; err != nil {
 		return u, errors.Wrap(err, "error while getting token")
 	}
 	return u, nil
 }
 
+func (r *repository) GetPasswordRestoreInfo(token string) (PasswordRestoreRequest, error) {
+	return PasswordRestoreRequest{}, nil
+}
+
 func (r *repository) AddUser(user User) error {
-	if err := r.db.Save(user).Error; err != nil {
+	if err := r.db.Create(user).Error; err != nil {
 		return errors.Wrap(err, "error while adding new user")
 	}
 	return nil
