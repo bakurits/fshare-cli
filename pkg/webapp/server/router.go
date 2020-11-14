@@ -35,6 +35,8 @@ func (s *Server) Init() {
 	router.GET("/login", s.loginHandler())
 	router.GET("/logout", s.logoutHandler())
 	router.GET("/auth", s.authHandler())
-	router.GET("/token", s.getUserTokenHandler())
+
+	router.GET("/api/token", s.getUserTokenHandler())
+
 	s.r = router
 }
