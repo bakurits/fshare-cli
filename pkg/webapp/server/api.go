@@ -3,23 +3,29 @@ package server
 import (
 	"net/http"
 
+	"github.com/bakurits/ph"
 	"github.com/gin-gonic/gin"
 )
 
 func (s *Server) getUserTokenHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-
-		email, _, ok := c.Request.BasicAuth()
+		email, password, ok := c.Request.BasicAuth()
 		if !ok {
 			c.JSON(http.StatusUnauthorized, gin.H{})
 			return
 		}
-		info, err := s.Repository.GetUser(email)
+
+		user, err := s.Repository.GetUser(email)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{})
 			return
 		}
-		token := info.Token
-		c.JSON(http.StatusOK, token)
+
+		if !ph.Compare(user.Password, password) {
+			c.JSON(http.StatusUnauthorized, gin.H{})
+			return
+		}
+
+		c.JSON(http.StatusOK, user.Token)
 	}
 }
