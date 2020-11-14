@@ -3,14 +3,12 @@ package server
 import (
 	"crypto/rand"
 	"encoding/base64"
+	"github.com/bakurits/fileshare/pkg/webapp/db"
+	"github.com/gin-gonic/contrib/sessions"
+	"github.com/gin-gonic/gin"
 	"html/template"
 	"log"
 	"net/http"
-
-	"github.com/bakurits/fileshare/pkg/webapp/db"
-
-	"github.com/gin-gonic/contrib/sessions"
-	"github.com/gin-gonic/gin"
 )
 
 func randToken() string {
@@ -53,7 +51,6 @@ func (s *Server) executeTemplate(w http.ResponseWriter, data interface{}, withLa
 	if withLayout {
 		files = append(files, s.StaticFileDir+"/layout.gohtml")
 	}
-
 	for _, file := range fileNames {
 		files = append(files, s.StaticFileDir+"/"+file+".gohtml")
 	}
