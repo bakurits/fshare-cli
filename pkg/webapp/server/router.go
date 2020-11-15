@@ -31,10 +31,13 @@ func (s *Server) Init() {
 	store := sessions.NewCookieStore([]byte("secret"))
 	router.Use(sessions.Sessions("fileshare", store))
 
-	router.GET("/", s.userExtractorMiddleware(s.homepageHandler()))
-	router.GET("/login", s.loginHandler())
-	router.GET("/logout", s.logoutHandler())
+	router.GET("/", s.userExtractorMiddleware(s.homePageHandler()))
+	router.GET("/login", s.loginPageHandler())
+	router.POST("/login", s.loginPageHandler())
+	router.POST("/logout", s.logoutHandler())
 	router.GET("/auth", s.authHandler())
+
+	router.Static("static", s.StaticFileDir)
 
 	router.GET("/api/token", s.getUserTokenHandler())
 
