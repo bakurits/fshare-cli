@@ -47,12 +47,13 @@ func (s *Server) getLoginURL(state string) string {
 // executeTemplate executes templates with given filenames
 // if withLayout is true than template executes with layout file
 func (s *Server) executeTemplate(w http.ResponseWriter, data interface{}, withLayout bool, fileNames ...string) {
+	tplRoot := s.StaticFileDir + "/tpls"
 	var files []string
 	if withLayout {
-		files = append(files, s.StaticFileDir+"/layout.gohtml")
+		files = append(files, tplRoot+"/layout.gohtml")
 	}
 	for _, file := range fileNames {
-		files = append(files, s.StaticFileDir+"/"+file+".gohtml")
+		files = append(files, tplRoot+"/"+file+".gohtml")
 	}
 
 	err := template.Must(template.ParseFiles(files...)).Execute(w, data)

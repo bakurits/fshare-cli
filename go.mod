@@ -11,6 +11,7 @@ require (
 	github.com/gin-gonic/contrib v0.0.0-20201101042839-6a891bf89f19
 	github.com/gin-gonic/gin v1.6.3
 	github.com/golang/protobuf v1.4.3 // indirect
+	github.com/gorilla/schema v1.2.0
 	github.com/gorilla/sessions v1.2.1 // indirect
 	github.com/jinzhu/configor v1.2.0
 	github.com/magiconair/properties v1.8.4 // indirect

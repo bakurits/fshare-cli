@@ -13,6 +13,7 @@ import (
 type Repository interface {
 	GetUser(string) (User, error)
 	AddUser(User) error
+	UpdateUser(User) error
 	GetPasswordRestoreInfo(string) (PasswordRestoreRequest, error)
 }
 
@@ -36,8 +37,11 @@ func (r *repository) GetUser(email string) (User, error) {
 	return u, nil
 }
 
-func (r *repository) GetPasswordRestoreInfo(token string) (PasswordRestoreRequest, error) {
-	return PasswordRestoreRequest{}, nil
+func (r *repository) UpdateUser(user User) error {
+	if err := r.db.Updates(user).Error; err != nil {
+		return errors.Wrap(err, "error while updating user")
+	}
+	return nil
 }
 
 func (r *repository) AddUser(user User) error {
@@ -45,6 +49,9 @@ func (r *repository) AddUser(user User) error {
 		return errors.Wrap(err, "error while adding new user")
 	}
 	return nil
+}
+func (r *repository) GetPasswordRestoreInfo(_ string) (PasswordRestoreRequest, error) {
+	return PasswordRestoreRequest{}, nil
 }
 
 type repository struct {

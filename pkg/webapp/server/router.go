@@ -8,7 +8,10 @@ import (
 
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/gorilla/schema"
 )
+
+var schemaDecoder = schema.NewDecoder()
 
 // Server dependencies for endpoints
 type Server struct {
@@ -31,10 +34,21 @@ func (s *Server) Init() {
 	store := sessions.NewCookieStore([]byte("secret"))
 	router.Use(sessions.Sessions("fileshare", store))
 
-	router.GET("/", s.userExtractorMiddleware(s.homepageHandler()))
-	router.GET("/login", s.loginHandler())
-	router.GET("/logout", s.logoutHandler())
+	router.GET("/", s.userExtractorMiddleware(s.homePageHandler()))
+
+	router.GET("/login", s.loginPageHandler())
+	router.POST("/login", s.loginPageHandler())
+
+	router.GET("/change-password", s.userExtractorMiddleware(s.changePasswordPageHandler()))
+	router.POST("/change-password", s.userExtractorMiddleware(s.changePasswordHandler()))
+
+	router.POST("/logout", s.logoutHandler())
+
 	router.GET("/auth", s.authHandler())
-	router.GET("/token", s.getUserTokenHandler())
+
+	router.Static("static", s.StaticFileDir)
+
+	router.GET("/api/token", s.getUserTokenHandler())
+
 	s.r = router
 }
