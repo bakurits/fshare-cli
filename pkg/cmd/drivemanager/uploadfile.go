@@ -2,6 +2,7 @@ package drivemanager
 
 import (
 	"github.com/bakurits/fileshare/pkg/drive"
+
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
@@ -24,14 +25,12 @@ func runUploadFile(args []string) error {
 	if len(args) == 0 {
 		return errors.New("no file specified to upload")
 	}
-	// Read the file
 	authClient, err := getAuthClient()
 	if err != nil {
 		return errors.Wrap(err, "auth error")
 	}
 
 	service, err := drive.NewService(authClient.Client)
-
 	if err != nil {
 		return err
 	}
