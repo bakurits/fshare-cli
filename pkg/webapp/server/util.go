@@ -24,7 +24,7 @@ type handlerWithUser func(user db.User, c *gin.Context)
 func (s *Server) userExtractorMiddleware(handler handlerWithUser) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		session := sessions.Default(c)
-		email := session.Get("email")
+		email := session.Get(EmailSessionKey)
 		if email == nil {
 			c.Redirect(http.StatusSeeOther, "/login")
 			return
@@ -72,7 +72,7 @@ func (s *Server) getEmailFromPasswordRecoveryRequest(c *gin.Context) string {
 			email = info.Email
 		}
 	} else {
-		email = session.Get("email").(string)
+		email = session.Get(EmailSessionKey).(string)
 	}
 	return email
 }

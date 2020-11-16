@@ -74,12 +74,12 @@ func (s *Server) loginPageHandler() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 		session := sessions.Default(c)
-		if session.Get("email") != nil {
+		if session.Get(EmailSessionKey) != nil {
 			c.Redirect(http.StatusSeeOther, "/")
 			return
 		}
 		state := randToken()
-		session.Set("state", state)
+		session.Set(StateSessionKey, state)
 		_ = session.Save()
 
 		s.executeTemplate(c.Writer, LoginResponse{AuthLink: s.getLoginURL(state)}, true, "login")
@@ -110,7 +110,7 @@ func (s *Server) loginHandler() gin.HandlerFunc {
 			_ = c.AbortWithError(http.StatusUnauthorized, errors.New("incorrect credentials"))
 			return
 		}
-		session.Set("email", req.Email)
+		session.Set(EmailSessionKey, req.Email)
 		_ = session.Save()
 
 		c.Redirect(http.StatusSeeOther, "/")
@@ -129,8 +129,8 @@ func (s *Server) logoutHandler() gin.HandlerFunc {
 func (s *Server) authHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		session := sessions.Default(c)
-		retrievedState := session.Get("state")
-		if retrievedState != c.Query("state") {
+		retrievedState := session.Get(StateSessionKey)
+		if retrievedState != c.Query(StateSessionKey) {
 			_ = c.AbortWithError(http.StatusUnauthorized, fmt.Errorf("invalid session state: %s", retrievedState))
 			return
 		}
@@ -147,7 +147,7 @@ func (s *Server) authHandler() gin.HandlerFunc {
 			Token:    db.TokenStore(*client.Token),
 		})
 
-		session.Set("email", client.Email)
+		session.Set(EmailSessionKey, client.Email)
 		_ = session.Save()
 		c.Redirect(http.StatusSeeOther, "/")
 	}
@@ -163,7 +163,7 @@ func (s *Server) setPasswordHandler() gin.HandlerFunc {
 			return
 		}
 
-		session.Set("emil", email)
+		session.Set(EmailSessionKey, email)
 		_ = session.Save()
 
 		s.executeTemplate(c.Writer, struct{}{}, true, "password_recovery")
