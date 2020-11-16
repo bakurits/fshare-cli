@@ -11,6 +11,8 @@ import (
 	"github.com/gorilla/schema"
 )
 
+const GetTokenEndpoint = "/api/token"
+
 var schemaDecoder = schema.NewDecoder()
 
 // Server dependencies for endpoints
@@ -48,7 +50,7 @@ func (s *Server) Init() {
 
 	router.Static("static", s.StaticFileDir)
 
-	router.GET("/api/token", s.getUserTokenHandler())
+	router.GET(GetTokenEndpoint, s.getUserTokenHandler())
 
 	s.r = router
 }

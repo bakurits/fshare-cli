@@ -1,28 +1,28 @@
 package drivemanager
 
 import (
-	"errors"
+	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
-	"os"
+
+	"github.com/bakurits/fileshare/pkg/auth"
+	"github.com/bakurits/fileshare/pkg/webapp/server"
 
 	"github.com/bgentry/speakeasy"
 	"github.com/spf13/cobra"
+	"golang.org/x/oauth2"
 )
 
 type AuthorizeOptions struct {
 	email string
 }
 
-const GetEndPoint = "api/token"
-
 // NewAuthorizeCommand : authorizeCmd represents the authorize command
 func NewAuthorizeCommand() *cobra.Command {
 	var opts AuthorizeOptions
 	var authorizeCmd = &cobra.Command{
-		Use:   "authorize",
-		Short: "make authorization in google drivemanager with credentials with given directory which holds a file credentialsMail.json",
+		Use:   "auth",
+		Short: "make authorization in google drive with credentials with given directory which holds a file credentialsMail.json",
 		Long:  ``,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return authorize(opts)
@@ -35,55 +35,43 @@ func NewAuthorizeCommand() *cobra.Command {
 	return authorizeCmd
 }
 
-// getToken : make a get request to a server for getting token
-func getToken(email string, password string, getUrl string) (string, error) {
-	client := &http.Client{}
-	req, err := http.NewRequest("GET", getUrl, nil)
-	if err != nil {
-		return "", err
-	}
-	req.SetBasicAuth(email, password)
-	resp, err := client.Do(req)
-	if err != nil {
-		return "", err
-	}
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return "", err
-	}
-
-	if resp.StatusCode != 200 {
-		return "", errors.New(string(body))
-	}
-	return string(body), nil
-}
-
-func writeToken(body string, CredentialsDir string) error {
-	f, err := os.Create(CredentialsDir + "/token.json")
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-	_, err = f.WriteString(body)
-	return err
-}
-
-// authorize : make authorization
-func authorize(opts AuthorizeOptions) error {
+// storeToken : make a get request to a server for getting token
+func storeToken(email string, password string) error {
 	cfg, err := getConfig()
 	if err != nil {
 		return err
 	}
+
+	client := &http.Client{}
+	req, err := http.NewRequest(http.MethodGet, cfg.Host+server.GetTokenEndpoint, nil)
+	if err != nil {
+		return err
+	}
+
+	req.SetBasicAuth(email, password)
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	var tok oauth2.Token
+	if err := json.NewDecoder(resp.Body).Decode(&tok); err != nil {
+		return err
+	}
+
+	if err := auth.SaveToken(cfg.TokenPath, &tok); err != nil {
+		return err
+	}
+	return nil
+}
+
+// authorize : make authorization
+func authorize(opts AuthorizeOptions) error {
 	prompt := fmt.Sprintf("Enter password:\n")
 	password, err := speakeasy.Ask(prompt)
 	if err != nil {
 		return err
 	}
-	body, err := getToken(opts.email, password, cfg.Host+"/"+GetEndPoint)
-	if err != nil {
-		return err
-	}
-	err = writeToken(body, cfg.CredentialsDir)
-	return err
+	return storeToken(opts.email, password)
 }

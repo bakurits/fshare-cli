@@ -59,7 +59,6 @@ func (cfg *Config) ClientFromCode(code string) (*Client, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "error while generating token")
 	}
-	_ = saveToken("newToken.json", tok)
 
 	return cfg.ClientFromToken(tok)
 }
@@ -102,8 +101,8 @@ func (cfg *Config) ClientFromToken(tok *oauth2.Token) (*Client, error) {
 	}, nil
 }
 
-// Saves a token to a file path.
-func saveToken(path string, token *oauth2.Token) error {
+// SaveToken saves a token to a file path.
+func SaveToken(path string, token *oauth2.Token) error {
 	fmt.Printf("Saving credential file to: %s\n", path)
 	f, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0600)
 	if err != nil {
