@@ -22,7 +22,7 @@ type Config struct {
 
 	TokenPath string
 
-	GetTokenUrl string
+	GetUrl string
 }
 
 type GoogleCredentials struct {
