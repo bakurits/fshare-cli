@@ -153,20 +153,6 @@ func (s *Server) authHandler() gin.HandlerFunc {
 	}
 }
 
-func (s *Server) getEmailFromPasswordRecoveryRequest(c *gin.Context) string {
-	session := sessions.Default(c)
-	email := ""
-	if token := c.Query("token"); token != "" {
-		info, err := s.Repository.GetPasswordRestoreInfo(token)
-		if err == nil {
-			email = info.Email
-		}
-	} else {
-		email = session.Get("email").(string)
-	}
-	return email
-}
-
 func (s *Server) setPasswordHandler() gin.HandlerFunc {
 
 	return func(c *gin.Context) {

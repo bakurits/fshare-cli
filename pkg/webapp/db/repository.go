@@ -1,11 +1,11 @@
 package db
 
 import (
-	"gorm.io/driver/sqlite"
 	"log"
 
 	"github.com/pkg/errors"
 	"gorm.io/driver/mysql"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 

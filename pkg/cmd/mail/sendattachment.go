@@ -1,10 +1,12 @@
 package mail
 
 import (
+	"path/filepath"
+
 	"github.com/bakurits/fileshare/pkg/gmail"
+
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-	"path/filepath"
 )
 
 type SendMAilOptions struct {

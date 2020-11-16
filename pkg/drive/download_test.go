@@ -1,9 +1,11 @@
 package drive
 
 import (
-	"github.com/bakurits/fileshare/pkg/auth"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/bakurits/fileshare/pkg/auth"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestService_Download(t *testing.T) {
