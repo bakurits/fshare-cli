@@ -2,26 +2,65 @@ package server
 
 import (
 	"fmt"
-	"github.com/bakurits/fileshare/pkg/webapp/db"
+	"github.com/pkg/errors"
 	"net/http"
+
+	"github.com/bakurits/fileshare/pkg/webapp/db"
 
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
-func (s *Server) homepageHandler() handlerWithUser {
+func (s *Server) homePageHandler() handlerWithUser {
 
 	type Homepage struct {
-		Email string
+		Email         string
+		IsPasswordSet bool
 	}
 
 	return func(user db.User, c *gin.Context) {
-		s.executeTemplate(c.Writer, Homepage{Email: user.Email}, true, "homepage")
+		s.executeTemplate(c.Writer, Homepage{Email: user.Email, IsPasswordSet: user.Password != ""}, true, "homepage")
 	}
 
 }
 
-func (s *Server) loginHandler() gin.HandlerFunc {
+func (s *Server) changePasswordPageHandler() handlerWithUser {
+	return func(_ db.User, c *gin.Context) {
+		s.executeTemplate(c.Writer, struct{}{}, true, "change-password")
+	}
+}
+
+func (s *Server) changePasswordHandler() handlerWithUser {
+	type Request struct {
+		Password        string `schema:"password"`
+		PasswordConfirm string `schema:"passwordConfirm"`
+	}
+	return func(user db.User, c *gin.Context) {
+		if err := c.Request.ParseForm(); err != nil {
+			_ = c.AbortWithError(http.StatusBadRequest, errors.New("bad request"))
+			return
+		}
+		var req Request
+		if err := schemaDecoder.Decode(&req, c.Request.PostForm); err != nil {
+			_ = c.AbortWithError(http.StatusBadRequest, errors.New("bad request"))
+			return
+		}
+		if req.Password == "" || req.Password != req.PasswordConfirm {
+			_ = c.AbortWithError(http.StatusBadRequest, errors.New("bad request"))
+			return
+		}
+
+		_ = s.Repository.UpdateUser(db.User{
+			Email:    user.Email,
+			Password: req.Password,
+		})
+
+		c.Redirect(http.StatusSeeOther, "/")
+	}
+
+}
+
+func (s *Server) loginPageHandler() gin.HandlerFunc {
 
 	type LoginResponse struct {
 		AuthLink string
