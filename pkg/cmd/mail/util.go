@@ -1,10 +1,12 @@
 package mail
 
 import (
+	"os"
+
 	"github.com/bakurits/fileshare/pkg/auth"
 	"github.com/bakurits/fileshare/pkg/cfg"
+
 	"github.com/pkg/errors"
-	"os"
 )
 
 func getAuthClient() (*auth.Client, error) {
