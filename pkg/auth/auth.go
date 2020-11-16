@@ -43,7 +43,7 @@ func GetConfig(conf cfg.Config) *Config {
 }
 
 func (cfg *Config) AuthCodeURL(state string) string {
-	return cfg.authConfig.AuthCodeURL(state)
+	return cfg.authConfig.AuthCodeURL(state, oauth2.AccessTypeOffline)
 }
 
 type Client struct {
@@ -100,23 +100,6 @@ func (cfg *Config) ClientFromToken(tok *oauth2.Token) (*Client, error) {
 
 		Email: user.Email,
 	}, nil
-}
-
-// Retrieves a token from a local file.
-func tokenFromFile(file string) (*oauth2.Token, error) {
-	f, err := os.Open(file)
-	if err != nil {
-		return nil, err
-	}
-	defer func() {
-		err := f.Close()
-		if err != nil {
-			log.Println(err)
-		}
-	}()
-	tok := &oauth2.Token{}
-	err = json.NewDecoder(f).Decode(tok)
-	return tok, err
 }
 
 // Saves a token to a file path.
