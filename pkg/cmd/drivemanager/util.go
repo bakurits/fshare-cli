@@ -4,7 +4,6 @@ import (
 	"github.com/bakurits/fileshare/pkg/auth"
 	"github.com/bakurits/fileshare/pkg/cfg"
 	"github.com/pkg/errors"
-	"os"
 )
 
 func getAuthClient() (*auth.Client, error) {
@@ -21,7 +20,7 @@ func getAuthClient() (*auth.Client, error) {
 }
 
 func getConfig() (cfg.Config, error) {
-	cfgFile := os.Getenv("config")
+	cfgFile := "C:\\Users\\Giorgi\\GolandProjects\\fileshare\\cmd\\webapp\\config.json"
 	if cfgFile == "" {
 		cfgFile = "config.json"
 	}

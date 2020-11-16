@@ -1,0 +1,11 @@
+{
+"StaticFileDir": "pkg/webapp/tpls",
+"ConnectionString": "giorgi:giorgi121@(localhost)/test",
+"DBDialect": "mysql",
+"Server": "http://localhost",
+"Port": ":8080",
+"GoogleCredentialsPath": "C:\\Users\\Giorgi\\GolandProjects\\fileshare\\credentials\\web_app_credentials.json",
+"CredentialsDir" : "C:\\Users\\Giorgi\\GolandProjects\\fileshare\\credentials",
+"TokenPath": "C:\\Users\\Giorgi\\GolandProjects\\fileshare\\credentials\\token.json",
+"GetTokenUrl": "http://127.0.0.1:8080/token"
+}

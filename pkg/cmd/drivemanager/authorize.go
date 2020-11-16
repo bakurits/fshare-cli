@@ -1,10 +1,10 @@
 package drivemanager
 
 import (
-	"encoding/json"
 	"fmt"
-	"github.com/pkg/errors"
+	"io/ioutil"
 	"net/http"
+	"os"
 
 	"github.com/bgentry/speakeasy"
 	"github.com/spf13/cobra"
@@ -33,16 +33,38 @@ func NewAuthorizeCommand() *cobra.Command {
 	return authorizeCmd
 }
 
-// makeRequestBody : making request body
-func makeRequestBody(email string, password string) ([]byte, error) {
-	requestBody, err := json.Marshal(map[string]string{
-		"email":    email,
-		"password": password,
-	})
+// getToken : make a get request to a server for getting token
+func getToken(email string, password string) (string, error) {
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", "http://127.0.0.1:8080/token", nil)
 	if err != nil {
-		return make([]byte, 0, 0), errors.New("can't make json object")
+		return "", err
 	}
-	return requestBody, nil
+	req.SetBasicAuth(email, password)
+	resp, err := client.Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+	return string(body), nil
+}
+
+func writeToken(body string) error {
+	cfg, err := getConfig()
+	if err != nil {
+		return err
+	}
+	f, err := os.Create(cfg.CredentialsDir + "/token.json")
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	_, err = f.WriteString(body)
+	return err
 }
 
 // authorize : make authorization
@@ -52,14 +74,10 @@ func authorize(opts AuthorizeOptions) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println(opts.email)
-	fmt.Println(password)
-	requestBody, err := makeRequestBody(opts.email, password)
+	body, err := getToken(opts.email, password)
 	if err != nil {
 		return err
 	}
-	fmt.Println(requestBody)
-
-	http.Get("")
-	return nil
+	err = writeToken(body)
+	return err
 }

@@ -8,7 +8,8 @@ import (
 )
 
 type Config struct {
-	StaticFileDir string
+	StaticFileDir  string
+	CredentialsDir string
 
 	ConnectionString string
 	DBDialect        string
@@ -20,6 +21,8 @@ type Config struct {
 	GoogleCredentials     GoogleCredentials
 
 	TokenPath string
+
+	GetTokenUrl string
 }
 
 type GoogleCredentials struct {

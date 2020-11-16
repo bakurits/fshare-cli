@@ -1,3 +1,4 @@
 credentials
 .idea
 cmd/webapp/config.json
+cmd/drivemanager/config.json
