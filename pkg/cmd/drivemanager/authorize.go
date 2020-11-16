@@ -15,6 +15,8 @@ type AuthorizeOptions struct {
 	email string
 }
 
+const GetEndPoint = "api/token"
+
 // NewAuthorizeCommand : authorizeCmd represents the authorize command
 func NewAuthorizeCommand() *cobra.Command {
 	var opts AuthorizeOptions
@@ -78,7 +80,7 @@ func authorize(opts AuthorizeOptions) error {
 	if err != nil {
 		return err
 	}
-	body, err := getToken(opts.email, password, cfg.GetUrl)
+	body, err := getToken(opts.email, password, cfg.Host+"/"+GetEndPoint)
 	if err != nil {
 		return err
 	}
