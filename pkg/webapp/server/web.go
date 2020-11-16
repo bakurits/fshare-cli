@@ -2,13 +2,14 @@ package server
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
 	"net/http"
 
 	"github.com/bakurits/fileshare/pkg/webapp/db"
 
+	"github.com/bakurits/ph"
 	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/pkg/errors"
 )
 
 func (s *Server) homePageHandler() handlerWithUser {
@@ -50,9 +51,14 @@ func (s *Server) changePasswordHandler() handlerWithUser {
 			return
 		}
 
+		passHash, err := ph.HashAndSalt(req.Password)
+		if err != nil {
+			_ = c.AbortWithError(http.StatusInternalServerError, errors.New("internal server error"))
+			return
+		}
 		_ = s.Repository.UpdateUser(db.User{
 			Email:    user.Email,
-			Password: req.Password,
+			Password: passHash,
 		})
 
 		c.Redirect(http.StatusSeeOther, "/")
@@ -79,7 +85,37 @@ func (s *Server) loginPageHandler() gin.HandlerFunc {
 		s.executeTemplate(c.Writer, LoginResponse{AuthLink: s.getLoginURL(state)}, true, "login")
 	}
 }
+func (s *Server) loginHandler() gin.HandlerFunc {
+	type PostForm struct {
+		Email    string `schema:"email"`
+		Password string `schema:"password"`
+	}
+	return func(c *gin.Context) {
+		session := sessions.Default(c)
+		if err := c.Request.ParseForm(); err != nil {
+			_ = c.AbortWithError(http.StatusBadRequest, errors.New("bad request"))
+			return
+		}
+		var req PostForm
+		if err := schemaDecoder.Decode(&req, c.Request.PostForm); err != nil {
+			_ = c.AbortWithError(http.StatusBadRequest, errors.New("bad request"))
+			return
+		}
+		user, err := s.Repository.GetUser(req.Email)
+		if err != nil {
+			_ = c.AbortWithError(http.StatusUnauthorized, errors.New("user doesn't exists"))
+			return
+		}
+		if !ph.Compare(user.Password, req.Password) {
+			_ = c.AbortWithError(http.StatusUnauthorized, errors.New("incorrect credentials"))
+			return
+		}
+		session.Set("email", req.Email)
+		_ = session.Save()
 
+		c.Redirect(http.StatusSeeOther, "/")
+	}
+}
 func (s *Server) logoutHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		session := sessions.Default(c)

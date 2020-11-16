@@ -37,7 +37,7 @@ func (s *Server) Init() {
 	router.GET("/", s.userExtractorMiddleware(s.homePageHandler()))
 
 	router.GET("/login", s.loginPageHandler())
-	router.POST("/login", s.loginPageHandler())
+	router.POST("/login", s.loginHandler())
 
 	router.GET("/change-password", s.userExtractorMiddleware(s.changePasswordPageHandler()))
 	router.POST("/change-password", s.userExtractorMiddleware(s.changePasswordHandler()))
