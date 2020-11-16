@@ -4,9 +4,10 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 	"fmt"
+	"time"
+
 	"github.com/pkg/errors"
 	"golang.org/x/oauth2"
-	"time"
 )
 
 type TokenStore oauth2.Token
