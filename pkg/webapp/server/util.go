@@ -62,3 +62,17 @@ func (s *Server) executeTemplate(w http.ResponseWriter, data interface{}, withLa
 	}
 
 }
+
+func (s *Server) getEmailFromPasswordRecoveryRequest(c *gin.Context) string {
+	session := sessions.Default(c)
+	email := ""
+	if token := c.Query("token"); token != "" {
+		info, err := s.Repository.GetPasswordRestoreInfo(token)
+		if err == nil {
+			email = info.Email
+		}
+	} else {
+		email = session.Get("email").(string)
+	}
+	return email
+}
