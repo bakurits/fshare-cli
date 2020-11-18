@@ -5,23 +5,33 @@ import (
 	"github.com/bakurits/fileshare/pkg/cfg"
 	"github.com/bakurits/fileshare/pkg/webapp/db"
 	"github.com/bakurits/fileshare/pkg/webapp/server"
+	"os"
+
 	"log"
 	"net/http"
-	"os"
 )
 
 func main() {
-	conf, err := cfg.GetConfig(os.Getenv("config"))
+
+	var conf auth.WebConfig
+	err := cfg.GetConfig(os.Getenv("config.json"), &conf)
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	web, err := auth.LoadGoogleCredentials(conf.GoogleCredentialsPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	conf.GoogleCredentials = web
+
 	repository, err := db.NewRepository(conf.DBDialect, conf.ConnectionString)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	s := &server.Server{
-		AuthConfig:    auth.GetConfig(conf),
+		AuthConfig:    auth.GetWebConfig(conf),
 		Repository:    repository,
 		StaticFileDir: conf.StaticFileDir,
 	}

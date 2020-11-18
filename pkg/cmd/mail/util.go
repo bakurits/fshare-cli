@@ -1,6 +1,7 @@
 package mail
 
 import (
+	"log"
 	"os"
 
 	"github.com/bakurits/fileshare/pkg/auth"
@@ -14,7 +15,7 @@ func getAuthClient() (*auth.Client, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to find app config")
 	}
-	authCfg := auth.GetConfig(appCfg)
+	authCfg := auth.GetCmdConfig(appCfg)
 	client, err := authCfg.ClientFromTokenFile(appCfg.TokenPath)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to create auth client")
@@ -22,10 +23,23 @@ func getAuthClient() (*auth.Client, error) {
 	return client, nil
 }
 
-func getConfig() (cfg.Config, error) {
+func getConfig() (auth.CmdConfig, error) {
 	cfgFile := os.Getenv("config")
 	if cfgFile == "" {
 		cfgFile = "config.json"
 	}
-	return cfg.GetConfig(cfgFile)
+
+	var cmdConfig auth.CmdConfig
+	err := cfg.GetConfig(cfgFile, &cmdConfig)
+	if err != nil {
+		return auth.CmdConfig{}, err
+	}
+
+	web, err := auth.LoadGoogleCredentials(cmdConfig.GoogleCredentialsPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	cmdConfig.GoogleCredentials = web
+
+	return cmdConfig, nil
 }

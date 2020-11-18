@@ -1,15 +1,16 @@
 package drive
 
-import "github.com/bakurits/fileshare/pkg/cfg"
+import "github.com/bakurits/fileshare/pkg/auth"
 
-func getTestConfig() (cfg.Config, error) {
-	conf := cfg.Config{
+func getTestConfig() (auth.CmdConfig, error) {
+	conf := auth.CmdConfig{
 		GoogleCredentialsPath: "/home/bakurits/Documents/Programming/Utilities/fileshare/credentials/web_app_credentials.json",
 		TokenPath:             "/home/bakurits/Documents/Programming/Utilities/fileshare/credentials/token.json",
 	}
-	err := cfg.LoadGoogleCredentials(&conf)
+	web, err := auth.LoadGoogleCredentials(conf.GoogleCredentialsPath)
+	conf.GoogleCredentials = web
 	if err != nil {
-		return cfg.Config{}, err
+		return auth.CmdConfig{}, err
 	}
 	return conf, nil
 }

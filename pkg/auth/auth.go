@@ -9,8 +9,6 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/bakurits/fileshare/pkg/cfg"
-
 	"github.com/pkg/errors"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
@@ -26,17 +24,27 @@ var Scopes = []string{
 }
 
 type Config struct {
-	appConfig  cfg.Config
 	authConfig oauth2.Config
 }
 
-func GetConfig(conf cfg.Config) *Config {
+func GetWebConfig(conf WebConfig) *Config {
 	return &Config{
-		appConfig: conf,
 		authConfig: oauth2.Config{
 			ClientID:     conf.GoogleCredentials.ClientID,
 			ClientSecret: conf.GoogleCredentials.ClientSecret,
 			RedirectURL:  conf.Server + conf.Port + "/auth",
+			Scopes:       Scopes,
+			Endpoint:     google.Endpoint,
+		},
+	}
+}
+
+func GetCmdConfig(conf CmdConfig) *Config {
+	return &Config{
+		authConfig: oauth2.Config{
+			ClientID:     conf.GoogleCredentials.ClientID,
+			ClientSecret: conf.GoogleCredentials.ClientSecret,
+			RedirectURL:  "",
 			Scopes:       Scopes,
 			Endpoint:     google.Endpoint,
 		},
