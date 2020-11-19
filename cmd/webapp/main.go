@@ -5,21 +5,32 @@ import (
 	"github.com/bakurits/fileshare/pkg/cfg"
 	"github.com/bakurits/fileshare/pkg/webapp/db"
 	"github.com/bakurits/fileshare/pkg/webapp/server"
-	"os"
-
 	"log"
 	"net/http"
 )
 
-func main() {
+type Config struct {
+	StaticFileDir  string
+	CredentialsDir string
 
-	var conf auth.WebConfig
-	err := cfg.GetConfig(os.Getenv("config.json"), &conf)
+	ConnectionString string
+	DBDialect        string
+
+	Server string
+	Port   string
+
+	GoogleCredentialsPath string
+	GoogleCredentials     cfg.GoogleCredentials
+}
+
+func main() {
+	var conf Config
+	err := cfg.GetConfig(&conf)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	web, err := auth.LoadGoogleCredentials(conf.GoogleCredentialsPath)
+	web, err := cfg.LoadGoogleCredentials(conf.GoogleCredentialsPath, cfg.CredentialTypeWeb)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -31,7 +42,7 @@ func main() {
 	}
 
 	s := &server.Server{
-		AuthConfig:    auth.GetWebConfig(conf),
+		AuthConfig:    auth.GetConfig(conf.GoogleCredentials.ClientID, conf.GoogleCredentials.ClientSecret, conf.Server+conf.Port+"/auth"),
 		Repository:    repository,
 		StaticFileDir: conf.StaticFileDir,
 	}

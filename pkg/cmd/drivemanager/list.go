@@ -2,10 +2,10 @@ package drivemanager
 
 import (
 	"fmt"
+	"github.com/bakurits/fileshare/pkg/auth"
 
 	"github.com/bakurits/fileshare/pkg/drive"
 
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -13,8 +13,12 @@ type ListOptions struct {
 	number int
 }
 
-// NewListCommand : generates of command list command
-func NewListCommand() *cobra.Command {
+type ListCommand struct {
+	AuthClient *auth.Client
+}
+
+// New : generates of command list command
+func (c ListCommand) New() *cobra.Command {
 	var opts ListOptions
 
 	// listCmd represents the list command
@@ -23,7 +27,7 @@ func NewListCommand() *cobra.Command {
 		Short: "show list of files",
 		Long:  ``,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			err := runList(opts)
+			err := c.runList(opts)
 			return err
 		},
 	}
@@ -32,13 +36,8 @@ func NewListCommand() *cobra.Command {
 	return listCmd
 }
 
-func runList(opts ListOptions) error {
-	authClient, err := getAuthClient()
-	if err != nil {
-		return errors.Wrap(err, "auth error")
-	}
-
-	service, err := drive.NewService(authClient.Client)
+func (c ListCommand) runList(opts ListOptions) error {
+	service, err := drive.NewService(c.AuthClient.Client)
 	if err != nil {
 		return err
 	}

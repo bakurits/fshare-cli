@@ -27,24 +27,12 @@ type Config struct {
 	authConfig oauth2.Config
 }
 
-func GetWebConfig(conf WebConfig) *Config {
+func GetConfig(clientID, clientSecret, redirectURL string) *Config {
 	return &Config{
 		authConfig: oauth2.Config{
-			ClientID:     conf.GoogleCredentials.ClientID,
-			ClientSecret: conf.GoogleCredentials.ClientSecret,
-			RedirectURL:  conf.Server + conf.Port + "/auth",
-			Scopes:       Scopes,
-			Endpoint:     google.Endpoint,
-		},
-	}
-}
-
-func GetCmdConfig(conf CmdConfig) *Config {
-	return &Config{
-		authConfig: oauth2.Config{
-			ClientID:     conf.GoogleCredentials.ClientID,
-			ClientSecret: conf.GoogleCredentials.ClientSecret,
-			RedirectURL:  "",
+			ClientID:     clientID,
+			ClientSecret: clientSecret,
+			RedirectURL:  redirectURL,
 			Scopes:       Scopes,
 			Endpoint:     google.Endpoint,
 		},

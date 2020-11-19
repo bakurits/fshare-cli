@@ -17,15 +17,20 @@ type AuthorizeOptions struct {
 	email string
 }
 
+type AuthorizeCommand struct {
+	Host      string
+	TokenPath string
+}
+
 // NewAuthorizeCommand : authorizeCmd represents the authorize command
-func NewAuthorizeCommand() *cobra.Command {
+func (a AuthorizeCommand) New() *cobra.Command {
 	var opts AuthorizeOptions
 	var authorizeCmd = &cobra.Command{
 		Use:   "auth",
 		Short: "make authorization in google drive with credentials with given directory which holds a file credentialsMail.json",
 		Long:  ``,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return authorize(opts)
+			return a.authorize(opts)
 		},
 	}
 
@@ -36,14 +41,9 @@ func NewAuthorizeCommand() *cobra.Command {
 }
 
 // storeToken : make a get request to a server for getting token
-func storeToken(email string, password string) error {
-	cfg, err := getConfig()
-	if err != nil {
-		return err
-	}
-
+func (a AuthorizeCommand) storeToken(email string, password string) error {
 	client := &http.Client{}
-	req, err := http.NewRequest(http.MethodGet, cfg.Host+server.GetTokenEndpoint, nil)
+	req, err := http.NewRequest(http.MethodGet, a.Host+server.GetTokenEndpoint, nil)
 	if err != nil {
 		return err
 	}
@@ -60,18 +60,18 @@ func storeToken(email string, password string) error {
 		return err
 	}
 
-	if err := auth.SaveToken(cfg.TokenPath, &tok); err != nil {
+	if err := auth.SaveToken(a.TokenPath, &tok); err != nil {
 		return err
 	}
 	return nil
 }
 
 // authorize : make authorization
-func authorize(opts AuthorizeOptions) error {
+func (a AuthorizeCommand) authorize(opts AuthorizeOptions) error {
 	prompt := fmt.Sprintf("Enter password:\n")
 	password, err := speakeasy.Ask(prompt)
 	if err != nil {
 		return err
 	}
-	return storeToken(opts.email, password)
+	return a.storeToken(opts.email, password)
 }
