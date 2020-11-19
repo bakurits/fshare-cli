@@ -1,8 +1,8 @@
 package drivemanager
 
 import (
+	"github.com/bakurits/fileshare/pkg/auth"
 	"github.com/bakurits/fileshare/pkg/drive"
-	"github.com/bakurits/fileshare/pkg/testutils"
 	"github.com/spf13/cobra"
 )
 
@@ -11,8 +11,12 @@ type CreateDirOptions struct {
 	parent string
 }
 
-// NewCreateDirCommand : NewCreateDirCommand represents the creation of dir command
-func NewCreateDirCommand() *cobra.Command {
+type CreateDirCommand struct {
+	AuthClient *auth.Client
+}
+
+// New : NewCreateDirCommand represents the creation of dir command
+func (c CreateDirCommand) New() *cobra.Command {
 	var opts CreateDirOptions
 
 	// createdirCmd represents the createdir command
@@ -21,7 +25,7 @@ func NewCreateDirCommand() *cobra.Command {
 		Short: "creation of directory in google drive",
 		Long:  `creation of directory in google drive, first argument is dir you want to create, second argument is parent directory`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return runCreateDir(opts)
+			return c.runCreateDir(opts)
 		},
 	}
 
@@ -33,13 +37,10 @@ func NewCreateDirCommand() *cobra.Command {
 	return createdirCmd
 }
 
-func runCreateDir(opts CreateDirOptions) error {
-
+func (c CreateDirCommand) runCreateDir(opts CreateDirOptions) error {
 	createDir := opts.name
 	parentDir := opts.parent
-
-	service, err := drive.Authorize(testutils.RootDir() + "/credentials")
-
+	service, err := drive.NewService(c.AuthClient.Client)
 	if err != nil {
 		return err
 	}

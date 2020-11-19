@@ -2,10 +2,11 @@ package mail
 
 import (
 	"github.com/bakurits/fileshare/pkg/auth"
-	"github.com/bakurits/fileshare/pkg/gmail"
-	"github.com/bakurits/fileshare/pkg/testutils"
-	"github.com/spf13/cobra"
 	"path/filepath"
+
+	"github.com/bakurits/fileshare/pkg/gmail"
+
+	"github.com/spf13/cobra"
 )
 
 type SendMAilOptions struct {
@@ -16,8 +17,12 @@ type SendMAilOptions struct {
 	Content        string
 }
 
-// NewCreateDirCommand : generates of command createdir
-func NewSendAttachmentCommand() *cobra.Command {
+type SendAttachmentCommand struct {
+	AuthClient *auth.Client
+}
+
+// New: generates of command createdir
+func (c SendAttachmentCommand) New() *cobra.Command {
 	var opts SendMAilOptions
 
 	// sendmailCmd represents the sendmail command
@@ -26,7 +31,7 @@ func NewSendAttachmentCommand() *cobra.Command {
 		Short: "sending gmail or attachment to users",
 		Long:  ``,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return runSendMail(opts)
+			return c.runSendMail(opts)
 		},
 	}
 
@@ -44,14 +49,9 @@ func NewSendAttachmentCommand() *cobra.Command {
 }
 
 // runSendMail : sending gmail command
-func runSendMail(opts SendMAilOptions) error {
+func (c SendAttachmentCommand) runSendMail(opts SendMAilOptions) error {
 	fileDir, fileName := filepath.Split(opts.AttachmentPath)
-
-	client, err := auth.GetHTTPClient(testutils.RootDir() + "/credentials")
-	if err != nil {
-		return err
-	}
-	srv, err := gmail.NewService(client)
+	srv, err := gmail.NewService(c.AuthClient.Client)
 	if err != nil {
 		return err
 	}

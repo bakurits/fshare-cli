@@ -4,7 +4,6 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/bakurits/fileshare/pkg/auth"
 	"github.com/pkg/errors"
 	"golang.org/x/net/context"
 	"google.golang.org/api/drive/v3"
@@ -43,21 +42,4 @@ func (s *Service) CreateDir(name string, parentID string) (*drive.File, error) {
 	}
 
 	return file, nil
-}
-
-// Authorize get a service object from credentials json file
-func Authorize(credentials string) (*Service, error) {
-	client, err := auth.GetHTTPClient(credentials)
-
-	if err != nil {
-		return &Service{}, errors.Wrap(err, "unable to get client from drive")
-	}
-
-	service, err := NewService(client)
-
-	if err != nil {
-		return &Service{}, errors.Wrap(err, "unable to get service drive")
-	}
-
-	return service, nil
 }

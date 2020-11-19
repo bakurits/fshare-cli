@@ -1,0 +1,6 @@
+{
+"GoogleCredentialsPath": "C:\\Users\\Giorgi\\GolandProjects\\fileshare\\credentials\\web_app_credentials.json",
+"CredentialsDir" : "C:\\Users\\Giorgi\\GolandProjects\\fileshare\\credentials",
+"TokenPath": "C:\\Users\\Giorgi\\GolandProjects\\fileshare\\credentials\\token.json",
+"Host": "http://127.0.0.1:8080"
+}

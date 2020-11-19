@@ -2,38 +2,76 @@ package drivemanager
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"fmt"
+	"net/http"
 
-	"github.com/pkg/errors"
+	"github.com/bakurits/fileshare/pkg/auth"
+	"github.com/bakurits/fileshare/pkg/webapp/server"
+
+	"github.com/bgentry/speakeasy"
 	"github.com/spf13/cobra"
+	"golang.org/x/oauth2"
 )
 
+type AuthorizeOptions struct {
+	email string
+}
+
+type AuthorizeCommand struct {
+	Host      string
+	TokenPath string
+}
+
 // NewAuthorizeCommand : authorizeCmd represents the authorize command
-func NewAuthorizeCommand() *cobra.Command {
+func (a AuthorizeCommand) New() *cobra.Command {
+	var opts AuthorizeOptions
 	var authorizeCmd = &cobra.Command{
-		Use:   "authorize",
-		Short: "make authorization in google drivemanager with credentials with given directory which holds a file credentialsMail.json",
+		Use:   "auth",
+		Short: "make authorization in google drive with credentials with given directory which holds a file credentialsMail.json",
 		Long:  ``,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if len(args) != 1 {
-				return errors.New("too many arguments")
-			}
-			return authorize(args[0])
+			return a.authorize(opts)
 		},
 	}
+
+	authorizeCmd.Flags().StringVarP(&opts.email, "email", "m", "", "email")
+	authorizeCmd.MarkFlagRequired("email")
+
 	return authorizeCmd
 }
 
+// storeToken : make a get request to a server for getting token
+func (a AuthorizeCommand) storeToken(email string, password string) error {
+	client := &http.Client{}
+	req, err := http.NewRequest(http.MethodGet, a.Host+server.GetTokenEndpoint, nil)
+	if err != nil {
+		return err
+	}
+
+	req.SetBasicAuth(email, password)
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	var tok oauth2.Token
+	if err := json.NewDecoder(resp.Body).Decode(&tok); err != nil {
+		return err
+	}
+
+	if err := auth.SaveToken(a.TokenPath, &tok); err != nil {
+		return err
+	}
+	return nil
+}
+
 // authorize : make authorization
-func authorize(filePath string) error {
-
-	driveConfig := "state.json"
-
-	credentialsMap := make(map[string]string)
-
-	credentialsMap["credentialsPath"] = filePath
-	fileJSON, _ := json.Marshal(credentialsMap)
-	err := ioutil.WriteFile(driveConfig, fileJSON, 0777)
-
-	return err
+func (a AuthorizeCommand) authorize(opts AuthorizeOptions) error {
+	prompt := fmt.Sprintf("Enter password:\n")
+	password, err := speakeasy.Ask(prompt)
+	if err != nil {
+		return err
+	}
+	return a.storeToken(opts.email, password)
 }

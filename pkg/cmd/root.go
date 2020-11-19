@@ -2,17 +2,29 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/bakurits/fileshare/pkg/cmd/customoperations"
-	"github.com/bakurits/fileshare/pkg/cmd/drivemanager"
-	"github.com/bakurits/fileshare/pkg/cmd/mail"
-	"github.com/spf13/cobra"
+	"log"
 	"os"
 
-	homedir "github.com/mitchellh/go-homedir"
-	"github.com/spf13/viper"
+	"github.com/bakurits/fileshare/pkg/auth"
+	"github.com/bakurits/fileshare/pkg/cfg"
+	"github.com/bakurits/fileshare/pkg/cmd/drivemanager"
+	"github.com/bakurits/fileshare/pkg/cmd/mail"
+
+	"github.com/spf13/cobra"
 )
 
 var cfgFile string
+
+type Config struct {
+	TokenPath string
+	Host      string
+
+	GoogleCredentialsPath string
+	GoogleCredentials     cfg.GoogleCredentials
+}
+
+var conf Config
+var authClient *auth.Client
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -30,43 +42,44 @@ func Execute() {
 
 func init() {
 
-	cobra.OnInitialize(initConfig)
-
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.fileshare.yaml)")
+	initConfig()
 
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
-	rootCmd.AddCommand(customoperations.NewAddCommand())
-	rootCmd.AddCommand(drivemanager.NewUploadFileCommand())
-	rootCmd.AddCommand(drivemanager.NewCreateDirCommand())
-	rootCmd.AddCommand(drivemanager.NewAuthorizeCommand())
-	rootCmd.AddCommand(drivemanager.NewListCommand())
-	rootCmd.AddCommand(drivemanager.NewDownloadCommand())
-	rootCmd.AddCommand(mail.NewSendAttachmentCommand())
+	rootCmd.AddCommand(drivemanager.AuthorizeCommand{Host: conf.Host, TokenPath: conf.TokenPath}.New())
+	rootCmd.AddCommand(drivemanager.UploadFileCommand{AuthClient: authClient}.New())
+	rootCmd.AddCommand(drivemanager.CreateDirCommand{AuthClient: authClient}.New())
+	rootCmd.AddCommand(drivemanager.ListCommand{AuthClient: authClient}.New())
+	rootCmd.AddCommand(drivemanager.DownloadCommand{AuthClient: authClient}.New())
+	rootCmd.AddCommand(mail.SendAttachmentCommand{AuthClient: authClient}.New())
+
+}
+
+func readConfig() {
+	err := cfg.GetConfig(&conf)
+	if err != nil {
+		log.Fatal(err)
+	}
+	cred, err := cfg.LoadGoogleCredentials(conf.GoogleCredentialsPath, cfg.CredentialTypeDesktop)
+	if err != nil {
+		log.Fatal(err)
+	}
+	conf.GoogleCredentials = cred
+}
+
+func getAuthClient() error {
+	var err error
+	authClient, err = auth.
+		GetConfig(conf.GoogleCredentials.ClientID, conf.GoogleCredentials.ClientSecret, "http://localhost").
+		ClientFromTokenFile(conf.TokenPath)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // initConfig : initConfig reads in config file and ENV variables if set.
 func initConfig() {
-	if cfgFile != "" {
-		// Use config file from the flag.
-		viper.SetConfigFile(cfgFile)
-	} else {
-		// Find home directory.
-		home, err := homedir.Dir()
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-
-		// Search config in home directory with name ".fileshare" (without extension).
-		viper.AddConfigPath(home)
-		viper.SetConfigName(".fileshare")
-	}
-
-	viper.AutomaticEnv() // read in environment variables that match
-
-	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
-	}
+	readConfig()
+	_ = getAuthClient()
 }
