@@ -1,12 +1,13 @@
 package main
 
 import (
+	"log"
+	"net/http"
+
 	"github.com/bakurits/fileshare/pkg/auth"
 	"github.com/bakurits/fileshare/pkg/cfg"
 	"github.com/bakurits/fileshare/pkg/webapp/db"
 	"github.com/bakurits/fileshare/pkg/webapp/server"
-	"log"
-	"net/http"
 )
 
 type Config struct {

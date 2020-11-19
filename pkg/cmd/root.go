@@ -2,13 +2,15 @@ package cmd
 
 import (
 	"fmt"
+	"log"
+	"os"
+
 	"github.com/bakurits/fileshare/pkg/auth"
 	"github.com/bakurits/fileshare/pkg/cfg"
 	"github.com/bakurits/fileshare/pkg/cmd/drivemanager"
 	"github.com/bakurits/fileshare/pkg/cmd/mail"
+
 	"github.com/spf13/cobra"
-	"log"
-	"os"
 )
 
 var cfgFile string
