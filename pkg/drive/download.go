@@ -2,16 +2,15 @@ package drive
 
 import (
 	"fmt"
+	"io"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/pkg/errors"
 	"google.golang.org/api/drive/v3"
 
 	"github.com/dustin/go-humanize"
-
-	"io"
-	"os"
 )
 
 // WriteCounter counts the number of bytes written to it. It implements to the io.Writer interface

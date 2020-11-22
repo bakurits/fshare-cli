@@ -1,10 +1,10 @@
 package mail
 
 import (
-	"github.com/bakurits/fileshare/pkg/auth"
 	"path/filepath"
 
-	"github.com/bakurits/fileshare/pkg/gmail"
+	"github.com/bakurits/fshare-cli/pkg/auth"
+	"github.com/bakurits/fshare-cli/pkg/gmail"
 
 	"github.com/spf13/cobra"
 )

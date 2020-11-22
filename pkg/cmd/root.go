@@ -5,15 +5,13 @@ import (
 	"log"
 	"os"
 
-	"github.com/bakurits/fileshare/pkg/auth"
-	"github.com/bakurits/fileshare/pkg/cfg"
-	"github.com/bakurits/fileshare/pkg/cmd/drivemanager"
-	"github.com/bakurits/fileshare/pkg/cmd/mail"
+	"github.com/bakurits/fshare-cli/pkg/auth"
+	"github.com/bakurits/fshare-cli/pkg/cfg"
+	"github.com/bakurits/fshare-cli/pkg/cmd/drivemanager"
+	"github.com/bakurits/fshare-cli/pkg/cmd/mail"
 
 	"github.com/spf13/cobra"
 )
-
-var cfgFile string
 
 type Config struct {
 	TokenPath string

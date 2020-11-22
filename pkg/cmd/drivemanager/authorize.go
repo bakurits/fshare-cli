@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/bakurits/fileshare/pkg/auth"
-	"github.com/bakurits/fileshare/pkg/webapp/server"
+	"github.com/bakurits/fshare-cli/pkg/auth"
+	"github.com/bakurits/fshare-cli/pkg/cfg"
 
 	"github.com/bgentry/speakeasy"
 	"github.com/spf13/cobra"
@@ -22,7 +22,7 @@ type AuthorizeCommand struct {
 	TokenPath string
 }
 
-// NewAuthorizeCommand : authorizeCmd represents the authorize command
+// New : authorizeCmd represents the authorize command
 func (a AuthorizeCommand) New() *cobra.Command {
 	var opts AuthorizeOptions
 	var authorizeCmd = &cobra.Command{
@@ -43,7 +43,7 @@ func (a AuthorizeCommand) New() *cobra.Command {
 // storeToken : make a get request to a server for getting token
 func (a AuthorizeCommand) storeToken(email string, password string) error {
 	client := &http.Client{}
-	req, err := http.NewRequest(http.MethodGet, a.Host+server.GetTokenEndpoint, nil)
+	req, err := http.NewRequest(http.MethodGet, a.Host+cfg.GetTokenEndpoint, nil)
 	if err != nil {
 		return err
 	}
