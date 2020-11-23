@@ -20,7 +20,7 @@ type Config struct {
 func NewCmdRoot(conf *Config, authClient *auth.Client) *cobra.Command {
 	// rootCmd represents the base command when called without any subcommands
 	var rootCmd = &cobra.Command{
-		Use:   "fileshare",
+		Use:   cfg.AppName,
 		Short: "",
 		Long:  ``,
 	}
