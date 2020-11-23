@@ -6,11 +6,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// CreateDirOptions options for createdir
 type CreateDirOptions struct {
 	name   string
 	parent string
 }
 
+// CreateDirCommand stores dependencies for createdir command
 type CreateDirCommand struct {
 	AuthClient *auth.Client
 }

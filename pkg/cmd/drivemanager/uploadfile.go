@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// UploadFileCommand stores dependencies for upload file command
 type UploadFileCommand struct {
 	AuthClient *auth.Client
 }

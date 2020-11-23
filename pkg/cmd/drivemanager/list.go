@@ -9,10 +9,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// ListOptions options for list command
 type ListOptions struct {
 	number int
 }
 
+// ListCommand stores dependencies for list command
 type ListCommand struct {
 	AuthClient *auth.Client
 }

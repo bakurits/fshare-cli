@@ -9,6 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// SendMailOptions options for send attachment command
 type SendMAilOptions struct {
 	FromMail       string
 	ToMail         string
@@ -17,6 +18,7 @@ type SendMAilOptions struct {
 	Content        string
 }
 
+// SendAttachmentCommand stores dependencies for send attachment command
 type SendAttachmentCommand struct {
 	AuthClient *auth.Client
 }

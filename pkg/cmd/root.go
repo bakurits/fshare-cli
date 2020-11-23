@@ -31,6 +31,7 @@ var rootCmd = &cobra.Command{
 	Long:  ``,
 }
 
+// Execute executes cmd command
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)

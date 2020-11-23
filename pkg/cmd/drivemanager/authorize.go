@@ -12,10 +12,12 @@ import (
 	"golang.org/x/oauth2"
 )
 
+// AuthorizeOptions options for authorization
 type AuthorizeOptions struct {
 	email string
 }
 
+// AuthorizeCommand stores dependencies for authorize command
 type AuthorizeCommand struct {
 	Host      string
 	TokenPath string
