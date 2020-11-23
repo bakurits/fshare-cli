@@ -5,11 +5,11 @@ import (
 	"log"
 	"os"
 
-	"github.com/bakurits/fshare-cli/pkg/auth"
 	"github.com/bakurits/fshare-cli/pkg/cfg"
 	"github.com/bakurits/fshare-cli/pkg/cmd/drivemanager"
 	"github.com/bakurits/fshare-cli/pkg/cmd/mail"
 
+	"github.com/bakurits/fshare-common/auth"
 	"github.com/spf13/cobra"
 )
 

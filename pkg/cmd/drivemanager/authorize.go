@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/bakurits/fshare-cli/pkg/auth"
 	"github.com/bakurits/fshare-cli/pkg/cfg"
 
+	"github.com/bakurits/fshare-common/auth"
 	"github.com/bgentry/speakeasy"
 	"github.com/spf13/cobra"
 	"golang.org/x/oauth2"

@@ -1,9 +1,9 @@
 package drivemanager
 
 import (
-	"github.com/bakurits/fshare-cli/pkg/auth"
 	"github.com/bakurits/fshare-cli/pkg/drive"
 
+	"github.com/bakurits/fshare-common/auth"
 	"github.com/spf13/cobra"
 )
 

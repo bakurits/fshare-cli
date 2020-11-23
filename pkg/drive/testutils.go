@@ -1,8 +1,9 @@
 package drive
 
 import (
-	"github.com/bakurits/fshare-cli/pkg/auth"
 	"github.com/bakurits/fshare-cli/pkg/cfg"
+
+	"github.com/bakurits/fshare-common/auth"
 )
 
 func getTestClient() (*auth.Client, error) {

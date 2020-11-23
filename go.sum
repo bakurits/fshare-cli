@@ -48,6 +48,8 @@ github.com/armon/go-metrics v0.0.0-20180917152333-f0300d1749da/go.mod h1:Q73ZrmV
 github.com/armon/go-radix v0.0.0-20180808171621-7fddfc383310/go.mod h1:ufUuZ+zHj4x4TnLV4JWEpy2hxWSpsRywHrMgIH9cCH8=
 github.com/bakurits/fileshare v0.0.0-20201119181007-941dbc765c86 h1:yCjpvY4LOWQp7fU+Qiopz+moW1y73HeDEIR57rsXu/8=
 github.com/bakurits/fileshare v0.0.0-20201119181007-941dbc765c86/go.mod h1:nQXsVBvJRgvvn3sRxr9lEgqPCe18p6YwdQpQJ5grCYA=
+github.com/bakurits/fshare-common v0.0.0-20201123155205-1c3b97cf8d7b h1:4ca+YGddywcKs5nI90xN+9OY4ua3SaKrmDLCaJ5pd3w=
+github.com/bakurits/fshare-common v0.0.0-20201123155205-1c3b97cf8d7b/go.mod h1:7nRJyzsno0xsF6rFOmiLoAPGfx5hv8Zuy9QGhNHrIKg=
 github.com/bakurits/ph v0.0.0-20201029181156-2d4d1cd83f18 h1:8pC75HZI2fxzLFB2rA8i9DQtup3zhlPCXUcmKzfz97Y=
 github.com/bakurits/ph v0.0.0-20201029181156-2d4d1cd83f18/go.mod h1:r4uuIZ8mGOBaYce9nNTVnc/8aLSWYTG9g+tiAEpOlJo=
 github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973/go.mod h1:Dwedo/Wpr24TaqPxmxbtue+5NUziq4I4S80YR8gNf3Q=

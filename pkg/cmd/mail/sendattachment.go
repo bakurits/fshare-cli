@@ -3,9 +3,9 @@ package mail
 import (
 	"path/filepath"
 
-	"github.com/bakurits/fshare-cli/pkg/auth"
 	"github.com/bakurits/fshare-cli/pkg/gmail"
 
+	"github.com/bakurits/fshare-common/auth"
 	"github.com/spf13/cobra"
 )
 
