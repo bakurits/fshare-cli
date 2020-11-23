@@ -1,7 +1,6 @@
 package drive
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -22,7 +21,8 @@ func TestService_List(t *testing.T) {
 		return
 	}
 
+	is.NotEmpty(fileList)
 	for _, file := range fileList {
-		fmt.Println(file.Name)
+		is.NotEmpty(file.Name)
 	}
 }

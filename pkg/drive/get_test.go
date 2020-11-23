@@ -1,7 +1,6 @@
 package drive
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -19,5 +18,5 @@ func TestService_Get(t *testing.T) {
 	f, err := srv.Get("შესარჩევი სრული")
 	is.NoError(err)
 
-	fmt.Println(f)
+	is.NotEmpty(f.Name)
 }
