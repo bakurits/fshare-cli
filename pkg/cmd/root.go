@@ -4,8 +4,8 @@ import (
 	"github.com/bakurits/fshare-cli/pkg/cfg"
 	"github.com/bakurits/fshare-cli/pkg/cmd/drivemanager"
 	"github.com/bakurits/fshare-cli/pkg/cmd/mail"
-	"github.com/bakurits/fshare-common/auth"
 
+	"github.com/bakurits/fshare-common/auth"
 	"github.com/spf13/cobra"
 )
 
@@ -29,7 +29,6 @@ func NewCmdRoot(conf *Config, authClient *auth.Client) *cobra.Command {
 }
 
 func initCommands(rootCmd *cobra.Command, conf *Config, authClient *auth.Client) {
-
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
 	rootCmd.AddCommand(drivemanager.AuthorizeCommand{Host: conf.Host, TokenPath: conf.TokenPath}.New())
