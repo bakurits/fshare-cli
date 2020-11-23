@@ -8,6 +8,7 @@ require (
 	github.com/bgentry/speakeasy v0.1.0
 	github.com/dustin/go-humanize v1.0.0
 	github.com/pkg/errors v0.9.1
+	github.com/sethvargo/go-envconfig v0.3.2
 	github.com/spf13/cobra v1.1.1
 	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.6.1
