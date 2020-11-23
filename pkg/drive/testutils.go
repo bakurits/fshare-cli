@@ -25,7 +25,7 @@ func getTestClient() (*auth.Client, error) {
 		return nil, err
 	}
 
-	t, err := time.Parse(time.RFC3339Nano, conf.Expiry)
+	t, err := time.Parse(time.RFC3339, conf.Expiry)
 	if err != nil {
 		return nil, err
 	}
