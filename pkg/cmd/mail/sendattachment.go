@@ -41,9 +41,9 @@ func (c SendAttachmentCommand) New() *cobra.Command {
 	sendmailCmd.Flags().StringVar(&opts.Content, "content", "", "content message, default empty text")
 	sendmailCmd.Flags().StringVar(&opts.Subject, "subject", "", "Subject gmail, default empty text")
 
-	sendmailCmd.MarkFlagRequired("from")
-	sendmailCmd.MarkFlagRequired("to")
-	sendmailCmd.MarkFlagRequired("path")
+	_ = sendmailCmd.MarkFlagRequired("from")
+	_ = sendmailCmd.MarkFlagRequired("to")
+	_ = sendmailCmd.MarkFlagRequired("path")
 
 	return sendmailCmd
 }

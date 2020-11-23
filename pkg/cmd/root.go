@@ -39,7 +39,6 @@ func Execute() {
 }
 
 func init() {
-
 	initConfig()
 
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
@@ -50,7 +49,6 @@ func init() {
 	rootCmd.AddCommand(drivemanager.ListCommand{AuthClient: authClient}.New())
 	rootCmd.AddCommand(drivemanager.DownloadCommand{AuthClient: authClient}.New())
 	rootCmd.AddCommand(mail.SendAttachmentCommand{AuthClient: authClient}.New())
-
 }
 
 func readConfig() {

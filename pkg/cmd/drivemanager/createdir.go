@@ -31,8 +31,8 @@ func (c CreateDirCommand) New() *cobra.Command {
 
 	createdirCmd.Flags().StringVarP(&opts.name, "name", "n", "", "name of the directory")
 	createdirCmd.Flags().StringVarP(&opts.parent, "parent", "p", "", "parent directory name")
-	createdirCmd.MarkFlagRequired("name")
-	createdirCmd.MarkFlagRequired("parent")
+	_ = createdirCmd.MarkFlagRequired("name")
+	_ = createdirCmd.MarkFlagRequired("parent")
 
 	return createdirCmd
 }
@@ -46,6 +46,5 @@ func (c CreateDirCommand) runCreateDir(opts CreateDirOptions) error {
 	}
 
 	_, err = service.CreateDir(createDir, parentDir)
-
 	return err
 }

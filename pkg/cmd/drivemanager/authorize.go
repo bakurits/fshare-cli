@@ -2,7 +2,6 @@ package drivemanager
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/bakurits/fshare-cli/pkg/auth"
@@ -35,7 +34,7 @@ func (a AuthorizeCommand) New() *cobra.Command {
 	}
 
 	authorizeCmd.Flags().StringVarP(&opts.email, "email", "m", "", "email")
-	authorizeCmd.MarkFlagRequired("email")
+	_ = authorizeCmd.MarkFlagRequired("email")
 
 	return authorizeCmd
 }
@@ -68,7 +67,7 @@ func (a AuthorizeCommand) storeToken(email string, password string) error {
 
 // authorize : make authorization
 func (a AuthorizeCommand) authorize(opts AuthorizeOptions) error {
-	prompt := fmt.Sprintf("Enter password:\n")
+	prompt := "Enter password:\n"
 	password, err := speakeasy.Ask(prompt)
 	if err != nil {
 		return err
