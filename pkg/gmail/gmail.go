@@ -1,13 +1,16 @@
 package gmail
 
 import (
+	"context"
 	"crypto/rand"
 	"encoding/base64"
-	"github.com/pkg/errors"
-	"google.golang.org/api/gmail/v1"
 	"io/ioutil"
 	"log"
 	"net/http"
+
+	"github.com/pkg/errors"
+	"google.golang.org/api/gmail/v1"
+	"google.golang.org/api/option"
 )
 
 type Service struct {
@@ -16,7 +19,7 @@ type Service struct {
 
 // NewService returns new service instance
 func NewService(client *http.Client) (*Service, error) {
-	srv, err := gmail.New(client)
+	srv, err := gmail.NewService(context.Background(), option.WithHTTPClient(client))
 	if err != nil {
 		return &Service{}, errors.Wrap(err, "unable to retrieve Drive client")
 	}
@@ -31,7 +34,6 @@ func (s *Service) SendMessage(userID string, message gmail.Message) error {
 }
 
 func CreateMessage(from string, to string, subject string, content string) gmail.Message {
-
 	var message gmail.Message
 
 	messageBody := []byte("From: " + from + "\r\n" +
@@ -45,7 +47,6 @@ func CreateMessage(from string, to string, subject string, content string) gmail
 }
 
 func ChunkSplit(body string, limit int, end string) string {
-
 	var charSlice []rune
 
 	// push characters to slice
@@ -70,15 +71,12 @@ func ChunkSplit(body string, limit int, end string) string {
 		if len(charSlice) < limit {
 			limit = len(charSlice)
 		}
-
 	}
 
 	return result
-
 }
 
 func randStr(strSize int, randType string) string {
-
 	var dictionary string
 
 	if randType == "alphanum" {
@@ -105,7 +103,6 @@ func randStr(strSize int, randType string) string {
 }
 
 func CreateMessageWithAttachment(from string, to string, subject string, content string, fileDir string, fileName string) gmail.Message {
-
 	var message gmail.Message
 
 	// read file for attachment purpose

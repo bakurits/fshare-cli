@@ -10,12 +10,12 @@ import (
 	"google.golang.org/api/option"
 )
 
-// Service google drive API wrapper
+// Service google drive API wrapper.
 type Service struct {
 	drive *drive.Service
 }
 
-// NewService returns new service instance
+// NewService returns new service instance.
 func NewService(client *http.Client) (*Service, error) {
 	srv, err := drive.NewService(context.Background(), option.WithHTTPClient(client))
 	if err != nil {
@@ -26,7 +26,7 @@ func NewService(client *http.Client) (*Service, error) {
 	}, nil
 }
 
-// CreateDir creates a directory at google drive
+// CreateDir creates a directory at google drive.
 func (s *Service) CreateDir(name string, parentID string) (*drive.File, error) {
 	d := &drive.File{
 		Name:     name,

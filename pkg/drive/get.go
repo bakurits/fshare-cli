@@ -7,8 +7,8 @@ import (
 	"google.golang.org/api/drive/v3"
 )
 
-// Get finds file with given name on drive
-// if there are multiple files with given name method returns latest modified
+// Get finds file with given name on drive.
+// if there are multiple files with given name method returns latest modified.
 func (s *Service) Get(name string) (*drive.File, error) {
 	r, err := s.drive.Files.List().Q(fmt.Sprintf("name = '%s'", name)).PageSize(1).
 		Fields("nextPageToken, files(id, name, mimeType)").Do()

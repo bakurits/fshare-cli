@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// DownloadCommand stores dependencies for download command
 type DownloadCommand struct {
 	AuthClient *auth.Client
 }

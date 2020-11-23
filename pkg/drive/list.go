@@ -7,7 +7,7 @@ import (
 	"google.golang.org/api/drive/v3"
 )
 
-// List returns list of files contained in drive
+// List returns list of files contained in drive.
 func (s *Service) List(limit int) ([]*drive.File, error) {
 	var fileList []*drive.File
 	nextPageToken := ""

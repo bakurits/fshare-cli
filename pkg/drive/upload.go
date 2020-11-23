@@ -9,6 +9,7 @@ import (
 	"google.golang.org/api/drive/v3"
 )
 
+// Upload uploads file to google drive.
 func (s *Service) Upload(filePath string) (*drive.File, error) {
 	f, err := os.Open(filePath)
 	if err != nil {

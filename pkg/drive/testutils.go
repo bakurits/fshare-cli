@@ -6,8 +6,8 @@ import (
 )
 
 func getTestClient() (*auth.Client, error) {
-	tokenPath := "/home/bakurits/Documents/Programming/Utilities/fileshare/credentials/token.json"
-	credentialsPath := "/home/bakurits/Documents/Programming/Utilities/fileshare/credentials/google_credentials.json"
+	tokenPath := "testcredentials/token.json"
+	credentialsPath := "testcredentials/google_credentials.json"
 	cred, err := cfg.LoadGoogleCredentials(credentialsPath, cfg.CredentialTypeWeb)
 	if err != nil {
 		return nil, err

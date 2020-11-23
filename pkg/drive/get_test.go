@@ -17,5 +17,7 @@ func TestService_Get(t *testing.T) {
 	is.NoError(err)
 
 	f, err := srv.Get("შესარჩევი სრული")
+	is.NoError(err)
+
 	fmt.Println(f)
 }

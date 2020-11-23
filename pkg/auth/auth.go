@@ -106,7 +106,7 @@ func SaveToken(path string, token *oauth2.Token) error {
 		return errors.Wrap(err, "unable to cache oauth token")
 	}
 	defer func() {
-		err := f.Close()
+		err = f.Close()
 		if err != nil {
 			log.Println(err)
 		}
