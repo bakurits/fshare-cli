@@ -17,7 +17,7 @@ type Config struct {
 	GoogleCredentials     cfg.GoogleCredentials
 }
 
-func NewCmdRoot(conf Config, authClient *auth.Client) *cobra.Command {
+func NewCmdRoot(conf *Config, authClient *auth.Client) *cobra.Command {
 	// rootCmd represents the base command when called without any subcommands
 	var rootCmd = &cobra.Command{
 		Use:   "fileshare",
@@ -28,7 +28,7 @@ func NewCmdRoot(conf Config, authClient *auth.Client) *cobra.Command {
 	return rootCmd
 }
 
-func initCommands(rootCmd *cobra.Command, conf Config, authClient *auth.Client) {
+func initCommands(rootCmd *cobra.Command, conf *Config, authClient *auth.Client) {
 
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 

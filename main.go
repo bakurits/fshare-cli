@@ -22,7 +22,7 @@ func Execute(rootCmd *cobra.Command) {
 
 var authClient *auth.Client
 
-func readConfig() cmd.Config {
+func readConfig() *cmd.Config {
 	var conf cmd.Config
 	err := cfg.GetConfig(&conf)
 	if err != nil {
@@ -33,10 +33,10 @@ func readConfig() cmd.Config {
 		log.Fatal(err)
 	}
 	conf.GoogleCredentials = cred
-	return conf
+	return &conf
 }
 
-func getAuthClient(conf cmd.Config) *auth.Client {
+func getAuthClient(conf *cmd.Config) *auth.Client {
 	var err error
 	authClient, err = auth.
 		GetConfig(conf.GoogleCredentials.ClientID, conf.GoogleCredentials.ClientSecret, "http://localhost").
@@ -48,7 +48,7 @@ func getAuthClient(conf cmd.Config) *auth.Client {
 }
 
 // initConfig : initConfig reads in config file and ENV variables if set.
-func initConfig() (cmd.Config, *auth.Client) {
+func initConfig() (*cmd.Config, *auth.Client) {
 	conf := readConfig()
 	authClient := getAuthClient(conf)
 	return conf, authClient
