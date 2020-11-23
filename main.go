@@ -24,11 +24,11 @@ func readConfig() *cmd.Config {
 	var conf cmd.Config
 	err := cfg.GetConfig(&conf)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Can't find config")
 	}
 	cred, err := cfg.LoadGoogleCredentials(conf.GoogleCredentialsPath, cfg.CredentialTypeDesktop)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Unable to parse credentials")
 	}
 	conf.GoogleCredentials = cred
 	return &conf
