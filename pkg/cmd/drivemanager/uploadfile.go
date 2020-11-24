@@ -31,6 +31,10 @@ func (c UploadFileCommand) runUploadFile(args []string) error {
 		return errors.New("no file specified to upload")
 	}
 
+	if c.AuthClient == nil {
+		return errors.New("Unauthorized User")
+	}
+
 	service, err := drive.NewService(c.AuthClient.Client)
 	if err != nil {
 		return err

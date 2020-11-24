@@ -6,6 +6,7 @@ import (
 	"github.com/bakurits/fshare-cli/pkg/drive"
 
 	"github.com/bakurits/fshare-common/auth"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -39,6 +40,10 @@ func (c ListCommand) New() *cobra.Command {
 }
 
 func (c ListCommand) runList(opts ListOptions) error {
+	if c.AuthClient == nil {
+		return errors.New("Unauthorized User")
+	}
+
 	service, err := drive.NewService(c.AuthClient.Client)
 	if err != nil {
 		return err

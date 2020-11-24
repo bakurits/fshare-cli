@@ -4,6 +4,7 @@ import (
 	"github.com/bakurits/fshare-cli/pkg/drive"
 
 	"github.com/bakurits/fshare-common/auth"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -41,6 +42,10 @@ func (c CreateDirCommand) New() *cobra.Command {
 }
 
 func (c CreateDirCommand) runCreateDir(opts CreateDirOptions) error {
+	if c.AuthClient == nil {
+		return errors.New("Unauthorized User")
+	}
+
 	createDir := opts.name
 	parentDir := opts.parent
 	service, err := drive.NewService(c.AuthClient.Client)
