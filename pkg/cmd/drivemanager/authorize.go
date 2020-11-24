@@ -2,6 +2,7 @@ package drivemanager
 
 import (
 	"encoding/json"
+	"github.com/pkg/errors"
 	"net/http"
 
 	"github.com/bakurits/fshare-cli/pkg/cfg"
@@ -55,6 +56,10 @@ func (a AuthorizeCommand) storeToken(email string, password string) error {
 		return err
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return errors.New("Authentification Fail")
+	}
 
 	var tok oauth2.Token
 	if err := json.NewDecoder(resp.Body).Decode(&tok); err != nil {
