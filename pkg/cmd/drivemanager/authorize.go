@@ -2,13 +2,13 @@ package drivemanager
 
 import (
 	"encoding/json"
-	"github.com/pkg/errors"
 	"net/http"
 
 	"github.com/bakurits/fshare-cli/pkg/cfg"
 
 	"github.com/bakurits/fshare-common/auth"
 	"github.com/bgentry/speakeasy"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"golang.org/x/oauth2"
 )
@@ -58,7 +58,7 @@ func (a AuthorizeCommand) storeToken(email string, password string) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return errors.New("Authentification Fail")
+		return errors.New("authentification fail")
 	}
 
 	var tok oauth2.Token

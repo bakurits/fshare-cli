@@ -43,7 +43,7 @@ func (c CreateDirCommand) New() *cobra.Command {
 
 func (c CreateDirCommand) runCreateDir(opts CreateDirOptions) error {
 	if c.AuthClient == nil {
-		return errors.New("Unauthorized User")
+		return errors.New("unauthorized usser")
 	}
 
 	createDir := opts.name
