@@ -41,7 +41,7 @@ func (c ListCommand) New() *cobra.Command {
 
 func (c ListCommand) runList(opts ListOptions) error {
 	if c.AuthClient == nil {
-		return errors.New("Unauthorized User")
+		return errors.New("unauthorized user")
 	}
 
 	service, err := drive.NewService(c.AuthClient.Client)
