@@ -8,6 +8,7 @@ import (
 
 	"github.com/bakurits/fshare-common/auth"
 	"github.com/bgentry/speakeasy"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"golang.org/x/oauth2"
 )
@@ -55,6 +56,10 @@ func (a AuthorizeCommand) storeToken(email string, password string) error {
 		return err
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return errors.New("authentification fail")
+	}
 
 	var tok oauth2.Token
 	if err := json.NewDecoder(resp.Body).Decode(&tok); err != nil {

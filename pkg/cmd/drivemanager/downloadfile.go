@@ -34,6 +34,10 @@ func (c DownloadCommand) New() *cobra.Command {
 
 // download : make download
 func (c DownloadCommand) download(name string) error {
+	if c.AuthClient == nil {
+		return errors.New("unauthorized user")
+	}
+
 	srv, err := drive.NewService(c.AuthClient.Client)
 	if err != nil {
 		return errors.Wrap(err, "unexpected error")
