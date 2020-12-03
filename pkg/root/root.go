@@ -1,4 +1,4 @@
-package cmd
+package root
 
 import (
 	"github.com/bakurits/fshare-cli/pkg/cfg"
@@ -37,4 +37,5 @@ func initCommands(rootCmd *cobra.Command, conf *Config, authClient *auth.Client)
 	rootCmd.AddCommand(drivemanager.ListCommand{AuthClient: authClient}.New())
 	rootCmd.AddCommand(drivemanager.DownloadCommand{AuthClient: authClient}.New())
 	rootCmd.AddCommand(mail.SendAttachmentCommand{AuthClient: authClient}.New())
+	rootCmd.AddCommand(NewCmdCompletion())
 }
