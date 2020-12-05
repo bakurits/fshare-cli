@@ -7,8 +7,8 @@ import (
 
 	"github.com/bakurits/fshare-cli/pkg/cfg"
 	"github.com/bakurits/fshare-cli/pkg/root"
-	"github.com/bakurits/fshare-common/auth"
 
+	"github.com/bakurits/fshare-common/auth"
 	"github.com/spf13/cobra"
 )
 
