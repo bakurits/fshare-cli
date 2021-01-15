@@ -1,12 +1,12 @@
 package mail
 
 import (
-	"path/filepath"
-
+	"github.com/AlecAivazis/survey/v2"
 	"github.com/bakurits/fshare-cli/pkg/gmail"
-
+	"github.com/bakurits/fshare-cli/pkg/mailstore"
 	"github.com/bakurits/fshare-common/auth"
 	"github.com/spf13/cobra"
+	"path/filepath"
 )
 
 // SendMailOptions options for send attachment command
@@ -20,7 +20,8 @@ type SendMAilOptions struct {
 
 // SendAttachmentCommand stores dependencies for send attachment command
 type SendAttachmentCommand struct {
-	AuthClient *auth.Client
+	AuthClient    *auth.Client
+	MailStorePath string
 }
 
 // New: generates of command createdir
@@ -44,10 +45,67 @@ func (c SendAttachmentCommand) New() *cobra.Command {
 	sendmailCmd.Flags().StringVar(&opts.Subject, "subject", "", "Subject gmail, default empty text")
 
 	_ = sendmailCmd.MarkFlagRequired("from")
-	_ = sendmailCmd.MarkFlagRequired("to")
+	//_ = sendmailCmd.MarkFlagRequired("to")
 	_ = sendmailCmd.MarkFlagRequired("path")
 
 	return sendmailCmd
+}
+
+func containMail(mails []string, mail string) bool {
+	for _, v := range mails {
+		if v == mail {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (c SendAttachmentCommand) saveMail(toMail string) error {
+	mails, err := mailstore.ReadMails(c.MailStorePath)
+	if err != nil {
+		return err
+	}
+
+	if containMail(mails, toMail) {
+		return nil
+	}
+
+	return mailstore.WriteMail(toMail, c.MailStorePath)
+}
+
+func (c SendAttachmentCommand) chooseToMAil() (string, error) {
+	mails, err := mailstore.ReadMails(c.MailStorePath)
+	if err != nil {
+		return "", err
+	}
+
+	if len(mails) == 0 {
+		return "", nil
+	}
+
+	var qs = []*survey.Question{
+		{
+			Name: "mail",
+			Prompt: &survey.Select{
+				Message: "Choose a mail:",
+				Options: mails,
+				Default: mails[0],
+			},
+		},
+	}
+
+	answers := struct {
+		Mail string
+	}{}
+
+	err = survey.Ask(qs, &answers)
+
+	if err != nil {
+		return "", err
+	}
+
+	return answers.Mail, nil
 }
 
 // runSendMail : sending gmail command
@@ -57,6 +115,20 @@ func (c SendAttachmentCommand) runSendMail(opts SendMAilOptions) error {
 	if err != nil {
 		return err
 	}
+
+	if opts.ToMail != "" {
+		err = c.saveMail(opts.ToMail)
+		if err != nil {
+			return err
+		}
+	} else {
+		mail, err := c.chooseToMAil()
+		if err != nil {
+			return err
+		}
+		opts.ToMail = mail
+	}
+
 	messageWithAttachment := gmail.CreateMessageWithAttachment("me", opts.ToMail, opts.Subject, opts.Content, fileDir, fileName)
 	err = srv.SendMessage("me", messageWithAttachment)
 	return err
