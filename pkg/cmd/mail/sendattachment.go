@@ -1,16 +1,18 @@
 package mail
 
 import (
-	"github.com/AlecAivazis/survey/v2"
+	"path/filepath"
+
 	"github.com/bakurits/fshare-cli/pkg/gmail"
 	"github.com/bakurits/fshare-cli/pkg/mailstore"
 	"github.com/bakurits/fshare-common/auth"
+
+	"github.com/AlecAivazis/survey/v2"
 	"github.com/spf13/cobra"
-	"path/filepath"
 )
 
 // SendMailOptions options for send attachment command
-type SendMAilOptions struct {
+type SendMailOptions struct {
 	FromMail       string
 	ToMail         string
 	AttachmentPath string
@@ -24,9 +26,9 @@ type SendAttachmentCommand struct {
 	MailStorePath string
 }
 
-// New: generates of command createdir
+// New generates of command createdir
 func (c SendAttachmentCommand) New() *cobra.Command {
-	var opts SendMAilOptions
+	var opts SendMailOptions
 
 	// sendmailCmd represents the sendmail command
 	var sendmailCmd = &cobra.Command{
@@ -100,7 +102,6 @@ func (c SendAttachmentCommand) chooseToMAil() (string, error) {
 	}{}
 
 	err = survey.Ask(qs, &answers)
-
 	if err != nil {
 		return "", err
 	}
@@ -109,7 +110,7 @@ func (c SendAttachmentCommand) chooseToMAil() (string, error) {
 }
 
 // runSendMail : sending gmail command
-func (c SendAttachmentCommand) runSendMail(opts SendMAilOptions) error {
+func (c SendAttachmentCommand) runSendMail(opts SendMailOptions) error {
 	fileDir, fileName := filepath.Split(opts.AttachmentPath)
 	srv, err := gmail.NewService(c.AuthClient.Client)
 	if err != nil {
@@ -122,11 +123,10 @@ func (c SendAttachmentCommand) runSendMail(opts SendMAilOptions) error {
 			return err
 		}
 	} else {
-		mail, err := c.chooseToMAil()
+		opts.ToMail, err = c.chooseToMAil()
 		if err != nil {
 			return err
 		}
-		opts.ToMail = mail
 	}
 
 	messageWithAttachment := gmail.CreateMessageWithAttachment("me", opts.ToMail, opts.Subject, opts.Content, fileDir, fileName)
