@@ -5,9 +5,9 @@ import (
 
 	"github.com/bakurits/fshare-cli/pkg/gmail"
 	"github.com/bakurits/fshare-cli/pkg/mailstore"
-	"github.com/bakurits/fshare-common/auth"
 
 	"github.com/AlecAivazis/survey/v2"
+	"github.com/bakurits/fshare-common/auth"
 	"github.com/spf13/cobra"
 )
 
