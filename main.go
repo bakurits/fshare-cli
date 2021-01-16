@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/bakurits/fshare-cli/pkg/cfg"
-	"github.com/bakurits/fshare-cli/pkg/cmd"
+	"github.com/bakurits/fshare-cli/pkg/root"
 
 	"github.com/bakurits/fshare-common/auth"
 	"github.com/spf13/cobra"
@@ -20,8 +20,8 @@ func Execute(rootCmd *cobra.Command) {
 	}
 }
 
-func readConfig() *cmd.Config {
-	var conf cmd.Config
+func readConfig() *root.Config {
+	var conf root.Config
 	err := cfg.GetConfig(&conf)
 	if err != nil {
 		log.Fatal("Can't find config")
@@ -34,7 +34,7 @@ func readConfig() *cmd.Config {
 	return &conf
 }
 
-func getAuthClient(conf *cmd.Config) *auth.Client {
+func getAuthClient(conf *root.Config) *auth.Client {
 	var err error
 	authClient, err := auth.
 		GetConfig(conf.GoogleCredentials.ClientID, conf.GoogleCredentials.ClientSecret, "http://localhost").
@@ -45,7 +45,7 @@ func getAuthClient(conf *cmd.Config) *auth.Client {
 	return authClient
 }
 
-func initConfig() (*cmd.Config, *auth.Client) {
+func initConfig() (*root.Config, *auth.Client) {
 	conf := readConfig()
 	authClient := getAuthClient(conf)
 	return conf, authClient
@@ -53,6 +53,6 @@ func initConfig() (*cmd.Config, *auth.Client) {
 
 func main() {
 	conf, authClient := initConfig()
-	rootCmd := cmd.NewCmdRoot(conf, authClient)
+	rootCmd := root.NewCmdRoot(conf, authClient)
 	Execute(rootCmd)
 }

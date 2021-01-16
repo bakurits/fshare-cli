@@ -1,4 +1,4 @@
-package cmd
+package root
 
 import (
 	"github.com/bakurits/fshare-cli/pkg/cfg"
@@ -10,8 +10,9 @@ import (
 )
 
 type Config struct {
-	TokenPath string
-	Host      string
+	TokenPath     string
+	Host          string
+	MailStorePath string
 
 	GoogleCredentialsPath string
 	GoogleCredentials     cfg.GoogleCredentials
@@ -36,5 +37,6 @@ func initCommands(rootCmd *cobra.Command, conf *Config, authClient *auth.Client)
 	rootCmd.AddCommand(drivemanager.CreateDirCommand{AuthClient: authClient}.New())
 	rootCmd.AddCommand(drivemanager.ListCommand{AuthClient: authClient}.New())
 	rootCmd.AddCommand(drivemanager.DownloadCommand{AuthClient: authClient}.New())
-	rootCmd.AddCommand(mail.SendAttachmentCommand{AuthClient: authClient}.New())
+	rootCmd.AddCommand(mail.SendAttachmentCommand{AuthClient: authClient, MailStorePath: conf.MailStorePath}.New())
+	rootCmd.AddCommand(NewCmdCompletion())
 }
