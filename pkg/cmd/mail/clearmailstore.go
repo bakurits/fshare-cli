@@ -12,7 +12,6 @@ type ClearMailStoreCommand struct {
 }
 
 func (c ClearMailStoreCommand) New() *cobra.Command {
-
 	// sendmailCmd represents the sendmail command
 	var clearMailCmd = &cobra.Command{
 		Use:   "clearmailstore",
