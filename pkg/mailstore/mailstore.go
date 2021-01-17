@@ -22,6 +22,10 @@ func ReadMails(path string) ([]string, error) {
 	return lines, scanner.Err()
 }
 
+func DeleteMails(path string) error {
+	return os.Remove(path)
+}
+
 // WriteLines writes the lines to the given file.
 func WriteMail(mail string, path string) error {
 	file, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
