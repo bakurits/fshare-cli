@@ -2,6 +2,7 @@ package mail
 
 import (
 	"github.com/bakurits/fshare-cli/pkg/mailstore"
+
 	"github.com/spf13/cobra"
 )
 
