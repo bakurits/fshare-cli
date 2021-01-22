@@ -1,17 +1,17 @@
-package drivemanager
+package drive
 
 import (
-	auth2 "github.com/bakurits/fshare-cli/pkg/cmd/drivemanager/auth"
-	"github.com/bakurits/fshare-cli/pkg/cmd/drivemanager/createdir"
-	"github.com/bakurits/fshare-cli/pkg/cmd/drivemanager/download"
-	"github.com/bakurits/fshare-cli/pkg/cmd/drivemanager/list"
-	"github.com/bakurits/fshare-cli/pkg/cmd/drivemanager/uploadfile"
+	auth2 "github.com/bakurits/fshare-cli/pkg/cmd/drive/auth"
+	"github.com/bakurits/fshare-cli/pkg/cmd/drive/createdir"
+	"github.com/bakurits/fshare-cli/pkg/cmd/drive/download"
+	"github.com/bakurits/fshare-cli/pkg/cmd/drive/list"
+	"github.com/bakurits/fshare-cli/pkg/cmd/drive/uploadfile"
 	"github.com/bakurits/fshare-cli/pkg/cmdutil"
 	"github.com/bakurits/fshare-common/auth"
 	"github.com/spf13/cobra"
 )
 
-func NewDrive(conf *cmdutil.Config, authClient *auth.Client) *cobra.Command {
+func New(conf *cmdutil.Config, authClient *auth.Client) *cobra.Command {
 	driveCmd := &cobra.Command{
 		Use:   "drive <command>",
 		Short: "download, createdir, uploadfile, list, auth",

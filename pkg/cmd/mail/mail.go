@@ -1,4 +1,4 @@
-package drivemanager
+package mail
 
 import (
 	"github.com/bakurits/fshare-cli/pkg/cmd/mail/clear"
@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewMail(conf *cmdutil.Config, authClient *auth.Client) *cobra.Command {
+func New(conf *cmdutil.Config, authClient *auth.Client) *cobra.Command {
 	mailCmd := &cobra.Command{
 		Use:   "mail <command>",
 		Short: "send",
