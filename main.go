@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/bakurits/fshare-cli/pkg/cmdutil"
 	"log"
 	"os"
 
@@ -20,8 +21,8 @@ func Execute(rootCmd *cobra.Command) {
 	}
 }
 
-func readConfig() *root.Config {
-	var conf root.Config
+func readConfig() *cmdutil.Config {
+	var conf cmdutil.Config
 	err := cfg.GetConfig(&conf)
 	if err != nil {
 		log.Fatal("Can't find config")
@@ -34,7 +35,7 @@ func readConfig() *root.Config {
 	return &conf
 }
 
-func getAuthClient(conf *root.Config) *auth.Client {
+func getAuthClient(conf *cmdutil.Config) *auth.Client {
 	var err error
 	authClient, err := auth.
 		GetConfig(conf.GoogleCredentials.ClientID, conf.GoogleCredentials.ClientSecret, "http://localhost").
@@ -45,7 +46,7 @@ func getAuthClient(conf *root.Config) *auth.Client {
 	return authClient
 }
 
-func initConfig() (*root.Config, *auth.Client) {
+func initConfig() (*cmdutil.Config, *auth.Client) {
 	conf := readConfig()
 	authClient := getAuthClient(conf)
 	return conf, authClient

@@ -1,4 +1,4 @@
-package drivemanager
+package list
 
 import (
 	"fmt"

@@ -1,4 +1,4 @@
-package drivemanager
+package uploadfile
 
 import (
 	"github.com/bakurits/fshare-cli/pkg/drive"

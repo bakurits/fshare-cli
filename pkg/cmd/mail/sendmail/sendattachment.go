@@ -1,4 +1,4 @@
-package mail
+package sendmail
 
 import (
 	"path/filepath"
@@ -32,7 +32,7 @@ func (c SendAttachmentCommand) New() *cobra.Command {
 
 	// sendmailCmd represents the sendmail command
 	var sendmailCmd = &cobra.Command{
-		Use:   "sendattachment",
+		Use:   "send",
 		Short: "sending gmail or attachment to users",
 		Long:  ``,
 		RunE: func(cmd *cobra.Command, args []string) error {

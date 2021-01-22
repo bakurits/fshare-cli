@@ -1,4 +1,4 @@
-package drivemanager
+package auth
 
 import (
 	"encoding/json"

@@ -1,4 +1,4 @@
-package drivemanager
+package createdir
 
 import (
 	"github.com/bakurits/fshare-cli/pkg/drive"
