@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/bakurits/fshare-cli/pkg/cmdutil"
 	"log"
 	"os"
 
 	"github.com/bakurits/fshare-cli/pkg/cfg"
+	"github.com/bakurits/fshare-cli/pkg/cmdutil"
 	"github.com/bakurits/fshare-cli/pkg/root"
 
 	"github.com/bakurits/fshare-common/auth"
