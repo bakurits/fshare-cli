@@ -1,4 +1,4 @@
-package sendmail
+package mail
 
 import (
 	"path/filepath"

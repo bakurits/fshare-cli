@@ -1,8 +1,6 @@
 package mail
 
 import (
-	"github.com/bakurits/fshare-cli/pkg/cmd/mail/clear"
-	"github.com/bakurits/fshare-cli/pkg/cmd/mail/sendmail"
 	"github.com/bakurits/fshare-cli/pkg/cmdutil"
 	"github.com/bakurits/fshare-common/auth"
 	"github.com/spf13/cobra"
@@ -15,7 +13,7 @@ func New(conf *cmdutil.Config, authClient *auth.Client) *cobra.Command {
 		Long:  ``,
 	}
 
-	mailCmd.AddCommand(sendmail.SendAttachmentCommand{AuthClient: authClient, MailStorePath: conf.MailStorePath}.New())
-	mailCmd.AddCommand(clear.ClearMailStoreCommand{MailStorePath: conf.MailStorePath}.New())
+	mailCmd.AddCommand(SendAttachmentCommand{AuthClient: authClient, MailStorePath: conf.MailStorePath}.New())
+	mailCmd.AddCommand(ClearMailStoreCommand{MailStorePath: conf.MailStorePath}.New())
 	return mailCmd
 }

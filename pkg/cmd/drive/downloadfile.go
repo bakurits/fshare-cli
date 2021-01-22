@@ -1,4 +1,4 @@
-package download
+package drive
 
 import (
 	"github.com/bakurits/fshare-cli/pkg/drive"

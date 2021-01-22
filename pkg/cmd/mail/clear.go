@@ -1,4 +1,4 @@
-package clear
+package mail
 
 import (
 	"github.com/bakurits/fshare-cli/pkg/mailstore"
