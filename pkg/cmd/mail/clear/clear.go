@@ -1,4 +1,4 @@
-package mail
+package clear
 
 import (
 	"github.com/bakurits/fshare-cli/pkg/mailstore"
@@ -14,7 +14,7 @@ type ClearMailStoreCommand struct {
 func (c ClearMailStoreCommand) New() *cobra.Command {
 	// sendmailCmd represents the sendmail command
 	var clearMailCmd = &cobra.Command{
-		Use:   "clearmailstore",
+		Use:   "clear",
 		Short: "clear mail store",
 		Long:  ``,
 		RunE: func(cmd *cobra.Command, args []string) error {
