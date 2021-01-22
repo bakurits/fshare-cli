@@ -38,5 +38,6 @@ func initCommands(rootCmd *cobra.Command, conf *Config, authClient *auth.Client)
 	rootCmd.AddCommand(drivemanager.ListCommand{AuthClient: authClient}.New())
 	rootCmd.AddCommand(drivemanager.DownloadCommand{AuthClient: authClient}.New())
 	rootCmd.AddCommand(mail.SendAttachmentCommand{AuthClient: authClient, MailStorePath: conf.MailStorePath}.New())
+	rootCmd.AddCommand(mail.ClearMailStoreCommand{MailStorePath: conf.MailStorePath}.New())
 	rootCmd.AddCommand(NewCmdCompletion())
 }
