@@ -2,8 +2,8 @@ package drive
 
 import (
 	"github.com/bakurits/fshare-cli/pkg/cmdutil"
-	"github.com/bakurits/fshare-common/auth"
 
+	"github.com/bakurits/fshare-common/auth"
 	"github.com/spf13/cobra"
 )
 
