@@ -1,4 +1,4 @@
-package drivemanager
+package drive
 
 import (
 	"encoding/json"
