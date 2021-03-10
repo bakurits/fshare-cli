@@ -5,7 +5,6 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"io/ioutil"
-	"log"
 	"net/http"
 
 	"github.com/pkg/errors"
@@ -102,13 +101,13 @@ func randStr(strSize int, randType string) string {
 	return string(bytes)
 }
 
-func CreateMessageWithAttachment(from string, to string, subject string, content string, fileDir string, fileName string) gmail.Message {
+func CreateMessageWithAttachment(from string, to string, subject string, content string, fileDir string, fileName string) (gmail.Message, error) {
 	var message gmail.Message
 
 	// read file for attachment purpose
 	fileBytes, err := ioutil.ReadFile(fileDir + fileName)
 	if err != nil {
-		log.Fatalf("Unable to read file for attachment: %v", err)
+		return gmail.Message{}, err
 	}
 
 	fileMIMEType := http.DetectContentType(fileBytes)
@@ -121,15 +120,13 @@ func CreateMessageWithAttachment(from string, to string, subject string, content
 		"MIME-Version: 1.0\n" +
 		"to: " + to + "\n" +
 		"from: " + from + "\n" +
-		"subject: " + subject + "\n\n" +
-
+		"subject: " + "=?utf-8?B?'" + base64.StdEncoding.EncodeToString([]byte(subject)) + "'?=" + "\n\n" +
 		"--" + boundary + "\n" +
 		"Content-Type: text/plain; charset=" + string('"') + "UTF-8" + string('"') + "\n" +
 		"MIME-Version: 1.0\n" +
 		"Content-Transfer-Encoding: 7bit\n\n" +
 		content + "\n\n" +
 		"--" + boundary + "\n" +
-
 		"Content-Type: " + fileMIMEType + "; name=" + string('"') + fileName + string('"') + " \n" +
 		"MIME-Version: 1.0\n" +
 		"Content-Transfer-Encoding: base64\n" +
@@ -142,5 +139,5 @@ func CreateMessageWithAttachment(from string, to string, subject string, content
 
 	message.Raw = base64.URLEncoding.EncodeToString(messageBody)
 
-	return message
+	return message, nil
 }

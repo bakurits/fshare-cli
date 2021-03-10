@@ -76,7 +76,7 @@ func (c SendAttachmentCommand) saveMail(toMail string) error {
 	return mailstore.WriteMail(toMail, c.MailStorePath)
 }
 
-func (c SendAttachmentCommand) chooseToMAil() (string, error) {
+func (c SendAttachmentCommand) chooseToMail() (string, error) {
 	mails, err := mailstore.ReadMails(c.MailStorePath)
 	if err != nil {
 		return "", err
@@ -123,13 +123,16 @@ func (c SendAttachmentCommand) runSendMail(opts SendMailOptions) error {
 			return err
 		}
 	} else {
-		opts.ToMail, err = c.chooseToMAil()
+		opts.ToMail, err = c.chooseToMail()
 		if err != nil {
 			return err
 		}
 	}
 
-	messageWithAttachment := gmail.CreateMessageWithAttachment("me", opts.ToMail, opts.Subject, opts.Content, fileDir, fileName)
-	err = srv.SendMessage("me", messageWithAttachment)
-	return err
+	messageWithAttachment, err := gmail.CreateMessageWithAttachment("me", opts.ToMail, opts.Subject, opts.Content, fileDir, fileName)
+	if err != nil {
+		return err
+	}
+
+	return srv.SendMessage("me", messageWithAttachment)
 }

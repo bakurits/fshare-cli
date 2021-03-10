@@ -55,10 +55,10 @@ func (a AuthorizeCommand) storeToken(email string, password string) error {
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	if resp.StatusCode != http.StatusOK {
-		return errors.New("authentification fail")
+		return errors.New("authentication fail")
 	}
 
 	var tok oauth2.Token

@@ -6,7 +6,6 @@ require (
 	github.com/AlecAivazis/survey/v2 v2.2.7
 	github.com/adam-lavrik/go-imath v0.0.0-20200104135348-19d2b923d06c
 	github.com/bakurits/fshare-common v0.0.0-20201123155205-1c3b97cf8d7b
-	github.com/bgentry/speakeasy v0.1.0
 	github.com/dustin/go-humanize v1.0.0
 	github.com/pkg/errors v0.9.1
 	github.com/sethvargo/go-envconfig v0.3.2
